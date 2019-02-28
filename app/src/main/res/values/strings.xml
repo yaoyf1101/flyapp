@@ -1,0 +1,31 @@
+<resources>
+    <!--登录功能字符串资源-->
+    <string name="app_name">小菊花课堂</string>
+    <string name="user_name">账号</string>
+    <string name="user_password">密码</string>
+    <string name="login_in">登  录</string>
+    <string name="forget_password">忘了密码</string>
+    <string name="remember_password">记住密码</string>
+    <string name="auto_login">自动登录</string>
+    <string name="new_user">新用户</string>
+    <string name="new_user_name">新账号</string>
+    <string name="new_user_password">新密码</string>
+    <string name="ensure_password">确认密码</string>
+    <string name="register">注册</string>
+    <string name="back_login">已注册，去登录</string>
+    <string name="student">学生</string>
+    <string name="teacher">老师</string>
+    <string name="StORTelogin">选择登录身份</string>
+    <string name="StORTeregister">选择注册身份</string>
+    <string name="StORTefindpasswd">您的身份是？</string>
+    <string name="yaoyifei">作者姓名</string>
+    <string name="findpasswd">找回密码</string>
+    <string name="cancelfind">去登录</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_request_test">网络请求测试</string>
+    <string name="title_exit">退出登录</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
