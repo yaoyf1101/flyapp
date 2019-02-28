@@ -18,8 +18,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".View.Activity.RegisterActivity" />
-<!--        <activity android:name=".View.Activity.StudentMainActivity" />
-        <activity android:name=".View.Activity.TeacherMainActivity" />-->
         <activity android:name=".View.Activity.ForgotPasswdActivity" />
         <activity android:name=".View.Activity.HomeActivity">
         </activity>

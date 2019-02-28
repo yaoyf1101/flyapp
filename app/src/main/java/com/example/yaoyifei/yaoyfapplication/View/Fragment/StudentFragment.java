@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityStudentMainFragment extends Fragment {
+public class StudentFragment extends Fragment {
 
     SQLiteDatabase db;
     private RadioGroup mRadioGroup;
@@ -42,7 +41,7 @@ public class ActivityStudentMainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_student_main, null);
+        return inflater.inflate(R.layout.fragment_student, null);
     }
 
     @Override

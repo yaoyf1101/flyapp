@@ -17,7 +17,7 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.SQLiteUtil.DBHelper;
 
 
-public class ActivityTeacherMainFragment extends Fragment implements View.OnClickListener {
+public class TeacherFragment extends Fragment implements View.OnClickListener {
 
     EditText mEtname;
     EditText A,B,C,D;
@@ -38,7 +38,7 @@ public class ActivityTeacherMainFragment extends Fragment implements View.OnClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_teacher_main, null);
+        return inflater.inflate(R.layout.fragment_teacher, null);
     }
 
     @Override

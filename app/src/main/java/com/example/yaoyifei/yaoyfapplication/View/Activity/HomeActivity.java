@@ -24,8 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.ActivityStudentMainFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.ActivityTeacherMainFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
@@ -71,8 +71,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // init fragment
         mFragments = new ArrayList<>(4);
         mFragments.add(BlankFragment.newInstance("111","111"));
-        mFragments.add(new ActivityStudentMainFragment());
-        mFragments.add(new ActivityTeacherMainFragment());
+        mFragments.add(new StudentFragment());
+        mFragments.add(new TeacherFragment());
         mFragments.add(new Fragment());
         // init view pager
 
