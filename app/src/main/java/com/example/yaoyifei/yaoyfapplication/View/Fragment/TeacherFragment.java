@@ -123,7 +123,11 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
         String d = D.getText().toString();
         String answer = anwser.getText().toString();
         String note = ETnote.getText().toString();
-        addQuestion(name, a, b, c, d, answer, note);
+        if(!TextUtils.isEmpty(name)) {
+            addQuestion(name, a, b, c, d, answer, note);
+        }else {
+            Toast.makeText(getActivity(), "请输入题目名称", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void addQuestion(String name, String a, String b, String c, String d, String answer, String note) {
@@ -138,11 +142,7 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
         values.put("note", note);
         db.insert("question", null, values);
         db.close();
-        if (!TextUtils.isEmpty(name)){
-            Toast.makeText(getActivity(),"提交成功", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(getActivity(),"请输入题目名称", Toast.LENGTH_SHORT).show();
-        }
+        Toast.makeText(getActivity(),"提交成功", Toast.LENGTH_SHORT).show();
         clearData();
     }
 

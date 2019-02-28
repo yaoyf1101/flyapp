@@ -8,11 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <ScrollView
+        <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/swipe_refresh">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,7 +37,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
-
 
                     <!--四个选项-->
 
@@ -82,10 +84,9 @@
                 </RadioGroup>
 
             </LinearLayout>
-
-
+            
         </ScrollView>
-
+        </android.support.v4.widget.SwipeRefreshLayout>
         <!--切换题目-->
         <LinearLayout
             android:layout_width="match_parent"
