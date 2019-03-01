@@ -65,7 +65,6 @@ public class StudentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 check(mList);
-                btn_commit.setVisibility(View.INVISIBLE);
             }
         });
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -73,11 +72,12 @@ public class StudentFragment extends Fragment {
             public void onRefresh() {
                 initData(true);
                 mSwipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setEnabled(false);
             }
         });
     }
 
-    private void initData(Boolean isToast) {
+    public void initData(Boolean isToast) {
         db = SQLiteDatabase.openDatabase("/data/data/com.example.yaoyifei.yaoyfapplication/databases/Test.db", null, SQLiteDatabase.OPEN_READWRITE);
         mList = getQuestion();
 

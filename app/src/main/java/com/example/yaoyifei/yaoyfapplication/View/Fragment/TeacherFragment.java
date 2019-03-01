@@ -23,11 +23,8 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
     EditText A,B,C,D;
     EditText anwser;
     EditText ETnote;
-    Button commit;
+    Button commit,delete,deleteall,fix;
     DBHelper mDbHelper;
-    Button delete;
-    Button deleteall;
-    Button backtohome;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,11 +51,11 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
         delete = getDelete();
         deleteall=getDeleteall();
         commit=getCommit();
-        backtohome=getBacktohome();
+        fix = view.findViewById(R.id.fix);
         commit.setOnClickListener(this);
         delete.setOnClickListener(this);
         deleteall.setOnClickListener(this);
-        backtohome.setOnClickListener(this);
+        fix.setOnClickListener(this);
     }
 
     private EditText getETname(){
@@ -95,8 +92,6 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
 
     public Button getDeleteall() { return (Button) getView().findViewById(R.id.deleteall); }
 
-    public Button getBacktohome() { return (Button) getView().findViewById(R.id.backtohome); }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -110,12 +105,15 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
             case R.id.deleteall:
                 delAllQuestion();
                 break;
-            case R.id.backtohome:
+            case R.id.fix:
+                fixQuestion();
                 break;
+                default:
         }
     }
 
     private void addQuestion() {
+        getActivity().findViewById(R.id.swipe_refresh).setEnabled(true);
         String name = mEtname.getText().toString();
         String a = A.getText().toString();
         String b = B.getText().toString();
@@ -166,7 +164,43 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
         clearData();
     }
 
+    private void fixQuestion() {
+        getActivity().findViewById(R.id.swipe_refresh).setEnabled(true);
+        String name = mEtname.getText().toString();
+        String a = A.getText().toString();
+        String b = B.getText().toString();
+        String c = C.getText().toString();
+        String d = D.getText().toString();
+        String answer = anwser.getText().toString();
+        String note = ETnote.getText().toString();
+        if(!TextUtils.isEmpty(name)) {
+            fixQuesion(name, a, b, c, d, answer, note);
+        }else {
+            Toast.makeText(getActivity(), "请输入题目名称", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void fixQuesion(String name,String a, String b, String c, String d, String answer, String note){
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("a", a);
+        values.put("b", b);
+        values.put("c", c);
+        values.put("d", d);
+        values.put("answer", answer);
+        values.put("note", note);
+        if (name.length() != 0) {
+            db.update("question",values,"name=?",new String[]{name});
+            Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
+            clearData();
+        } else {
+            Toast.makeText(getActivity(), "该题目不存在", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void delQuestion(String name) {
+        getActivity().findViewById(R.id.swipe_refresh).setEnabled(true);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         if (name.length() != 0) {
             db.delete("question", "name=?", new String[]{name});
@@ -178,6 +212,7 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
     }
 
     private void delAllQuestion() {
+        getActivity().findViewById(R.id.swipe_refresh).setEnabled(true);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.delete("question", null, null);
         clearData();
