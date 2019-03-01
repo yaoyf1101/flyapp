@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         if(isTeacher){ //教师身份登录验证逻辑
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
                 if (login(name,password,usertype)) {
-                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, TeacherHomeActivity.class);
                     startActivity(intent);
                     finish();
                 } else {

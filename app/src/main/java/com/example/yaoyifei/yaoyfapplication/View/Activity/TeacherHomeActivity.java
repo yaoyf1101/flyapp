@@ -3,6 +3,7 @@ package com.example.yaoyifei.yaoyfapplication.View.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -13,21 +14,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.TestFragment;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 
@@ -35,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener {
+public class TeacherHomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener {
 
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
@@ -59,7 +58,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         // find view
         mViewPager = findViewById(R.id.fragment_vp);
-        mViewPager.setOffscreenPageLimit(3);
         mDrwerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
 
@@ -73,9 +71,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // init fragment
         mFragments = new ArrayList<>(4);
         mFragments.add(BlankFragment.newInstance("111","111"));
-        mFragments.add(new StudentFragment());
         mFragments.add(new TeacherFragment());
-        mFragments.add(new TestFragment());
+        mFragments.add(new Fragment());
+        mFragments.add(new Fragment());
         // init view pager
 
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -102,7 +100,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId()==R.id.navigation_exit){
                     loginActivity.clearData();
-                    Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(TeacherHomeActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
@@ -234,7 +232,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.count){
-            Toast.makeText(HomeActivity.this,"统计功能正在努力实现中，敬请期待",Toast.LENGTH_SHORT).show();
+            Toast.makeText(TeacherHomeActivity.this,"统计功能正在努力实现中，敬请期待",Toast.LENGTH_SHORT).show();
         }else{
             mDrwerLayout.openDrawer(Gravity.LEFT);
         }
@@ -249,14 +247,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onFinish(String response) {
                 Looper.prepare();
                 boolean isNull = response.isEmpty();
-                Toast.makeText(HomeActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeacherHomeActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
                 Looper.loop();
             }
 
             @Override
             public void onError(Exception e) {
                 Looper.prepare();
-                Toast.makeText(HomeActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeacherHomeActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
                 Looper.loop();
             }
         });

@@ -4,18 +4,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:id="@+id/swipe_refresh">
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/swipe_refresh">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,23 +69,22 @@
                         android:text="参照C"
                         android:layout_marginTop="10dp"/>
 
-                    <!--正确答案，默认是隐藏的-->
-
-                    <TextView
-                        android:visibility="invisible"
-                        android:id="@+id/tv_result"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="100dp"
-                        android:text="正确答案：肯定选A呀！"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="18sp"
-                        />
-
                 </RadioGroup>
 
+                <!--正确答案，默认是隐藏的-->
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/tv_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="初次做题请先下拉更新题库"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    />
+
             </LinearLayout>
-            
+
         </ScrollView>
         </android.support.v4.widget.SwipeRefreshLayout>
         <!--切换题目-->

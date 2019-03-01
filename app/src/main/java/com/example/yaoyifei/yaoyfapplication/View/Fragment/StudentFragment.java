@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.LayoutInflater;
@@ -24,14 +25,15 @@ import java.util.List;
 
 public class StudentFragment extends Fragment {
 
-    SQLiteDatabase db;
+    private SQLiteDatabase db;
     private RadioGroup mRadioGroup;
-    RadioButton mRadioButtonA,mRadioButtonB,mRadioButtonC,mRadioButtonD;
-    TextView tv_title, tv_result;
-    Button btn_down, btn_up,btn_commit;
-    int count;
-    int index;
-    List<Question> mList;
+    private RadioButton mRadioButtonA,mRadioButtonB,mRadioButtonC,mRadioButtonD;
+    private TextView tv_title, tv_result;
+    private Button btn_down, btn_up,btn_commit;
+    private int count;
+    private int index;
+    private List<Question> mList;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class StudentFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         tv_title = (TextView) view.findViewById(R.id.tv_title);
         tv_result = (TextView) view.findViewById(R.id.tv_result);
         mRadioGroup = (RadioGroup) view.findViewById(R.id.mRadioGroup);
@@ -57,36 +60,56 @@ public class StudentFragment extends Fragment {
         btn_down = (Button) view.findViewById(R.id.btn_down);
         btn_up = (Button) view.findViewById(R.id.btn_up);
         btn_commit = (Button) view.findViewById(R.id.commit);
+        initData(false);
         view.findViewById(R.id.commit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 check(mList);
+                btn_commit.setVisibility(View.INVISIBLE);
             }
         });
-        initData();
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initData(true);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
-    private void initData() {
+    private void initData(Boolean isToast) {
         db = SQLiteDatabase.openDatabase("/data/data/com.example.yaoyifei.yaoyfapplication/databases/Test.db", null, SQLiteDatabase.OPEN_READWRITE);
         mList = getQuestion();
 
         final int count = mList.size();
         if(count==0){
-            Toast.makeText(getActivity(), "当前题库没有题目！", Toast.LENGTH_SHORT).show();
+            if (isToast){
+                Toast.makeText(getActivity(), "当前题库没有题目！", Toast.LENGTH_SHORT).show();
+            }
+            tv_title.setText("题库");
+            mRadioButtonA.setText("空");
+            mRadioButtonB.setText("空");
+            mRadioButtonC.setText("如");
+            mRadioButtonD.setText("也");
+            tv_result.setText("等待老师发布考题吧！");
+            tv_result.setVisibility(View.VISIBLE);
             btn_down.setVisibility(View.INVISIBLE);
             btn_up.setVisibility(View.INVISIBLE);
-            tv_result.setVisibility(View.VISIBLE);
+            btn_commit.setVisibility(View.INVISIBLE);
             return;
         }
         final int[] corrent = {0};
 
         Question q = mList.get(0);
         tv_title.setText(q.question);
-
         mRadioButtonA.setText(q.answerA);
         mRadioButtonB.setText(q.answerB);
         mRadioButtonC.setText(q.answerC);
         mRadioButtonD.setText(q.answerD);
+        btn_down.setVisibility(View.VISIBLE);
+        btn_up.setVisibility(View.VISIBLE);
+        btn_commit.setVisibility(View.VISIBLE);
+        tv_result.setVisibility(View.INVISIBLE);
 
         //上一题
         btn_up.setOnClickListener(new View.OnClickListener() {
@@ -320,7 +343,6 @@ public class StudentFragment extends Fragment {
                                 mRadioButtonC.setText(q.answerC);
                                 mRadioButtonD.setText(q.answerD);
                                 tv_result.setText(q.explaination);
-                                tv_result.setText(q.explaination);
                                 //显示结果
                                 tv_result.setVisibility(View.VISIBLE);
                             }else {
@@ -339,7 +361,6 @@ public class StudentFragment extends Fragment {
                                 mRadioButtonB.setText(q.answerB);
                                 mRadioButtonC.setText(q.answerC);
                                 mRadioButtonD.setText(q.answerD);
-                                tv_result.setText(q.explaination);
                                 tv_result.setText(q.explaination);
                                 //显示结果
                                 tv_result.setVisibility(View.VISIBLE);

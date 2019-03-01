@@ -123,10 +123,30 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
         String d = D.getText().toString();
         String answer = anwser.getText().toString();
         String note = ETnote.getText().toString();
-        if(!TextUtils.isEmpty(name)) {
+/*        if(!TextUtils.isEmpty(name)) {
+            for (int i = 0; i <20 ; i++) {
+                name = i+"";
+                a = "A选项";
+                b = "B选项";
+                c = "C选项";
+                d = "D选项";
+                answer = "C";
+                note = "不会就选C";
+                addQuestion(name, a, b, c, d, answer, note);
+            }
             addQuestion(name, a, b, c, d, answer, note);
         }else {
             Toast.makeText(getActivity(), "请输入题目名称", Toast.LENGTH_SHORT).show();
+        }*/
+        for (int i = 0; i <20 ; i++) {
+            name = i+"";
+            a = "A选项";
+            b = "B选项";
+            c = "C选项";
+            d = "D选项";
+            answer = "C";
+            note = "不会就选C";
+            addQuestion(name, a, b, c, d, answer, note);
         }
     }
 
