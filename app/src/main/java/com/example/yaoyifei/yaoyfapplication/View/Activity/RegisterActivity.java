@@ -1,10 +1,14 @@
 package com.example.yaoyifei.yaoyfapplication.View.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -18,10 +22,13 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.SQLiteUtil.DBHelper;
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
+import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    final String address = "http://47.102.199.28/flyapp/addUser";
     TextView mtv_backlogin ;
     EditText mtv_newname;
     EditText mtv_newpassword;
@@ -77,7 +84,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.register_button:
-                registerOrNot();
+               // registerOrNot();
+                register();
                 break;
             case R.id.back_login:
                 Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
@@ -88,9 +96,49 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
+    private void register(){
+        String newname = mtv_newname.getText().toString();
+        String newpassword = mtv_newpassword.getText().toString();
+        String ensurepassword = mtv_ensurepassword.getText().toString();
+        int usertype = mRadioButtonStudent.isChecked()?0:1;
+        if(!newpassword.equals(ensurepassword)) {
+            Toast.makeText(RegisterActivity.this,"两次输入的密码不一致，请再输一次吧",Toast.LENGTH_SHORT).show();
+        }else if(newpassword.length()<6) {
+            Toast.makeText(RegisterActivity.this,"请保持密码长度不小于6位",Toast.LENGTH_SHORT).show();
+        }else {
+            HttpUtil.sedHttpRequest(address, newname, newpassword, usertype, new HttpCallbackListener() {
+                @Override
+                public void onFinish(String response) {
+                    Looper.prepare();
+                    if (response.equals("1")) {
+                        new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this).setTitle("恭喜，注册完成！")
+                                .setMessage("是否去登录").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }).setNegativeButton("取消", null).show();
+                        // Toast.makeText(RegisterActivity.this,"注册成功"+response,Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(RegisterActivity.this,"注册失败,用户名已经存在！",Toast.LENGTH_SHORT).show();
+                    }
+                    Looper.loop();
+                }
+                @Override
+                public void onError(Exception e) {
+                    Looper.prepare();
+                    Toast.makeText(RegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                }
+            });
+        }
+    }
     /**
      * 注册逻辑实现
-     */
+     *//*
     private void registerOrNot(){
         String newname = mtv_newname.getText().toString();
         String newpassword = mtv_newpassword.getText().toString();
@@ -115,9 +163,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             finish();
         }
     }
-    /**
+    *//**
      * 利用sql创建嵌入式数据库进行注册访问
-     */
+     *//*
     private void registerUserInfo(String username, String userpassword,String usertype) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -128,9 +176,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         db.close();
     }
 
-    /**
+    *//**
      * 检验用户名是否已经注册
-     */
+     *//*
     private boolean CheckIsDataAlreadyInDBorNot(String value) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         String Query = "Select * from usertable where username =?";
@@ -143,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         cursor.close();
         db.close();
         return false;
-    }
+    }*/
 
     private void nameFilter() {
         mtv_newname.setFilters(new InputFilter[]{

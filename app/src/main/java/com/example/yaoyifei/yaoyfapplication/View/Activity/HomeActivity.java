@@ -243,16 +243,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void HttpTest(){
         //发送请求，返回response响应，应该在这里面实现登录和注册的逻辑。
-        final String address = "http://www.w3school.com.cn/example/xmle_examples.asp";
+        final String address = "http://47.102.199.28/flyapp/login";
         HttpUtil.sedHttpRequest(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Looper.prepare();
-                boolean isNull = response.isEmpty();
-                Toast.makeText(HomeActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this,"请求成功"+response,Toast.LENGTH_SHORT).show();
                 Looper.loop();
             }
-
             @Override
             public void onError(Exception e) {
                 Looper.prepare();
