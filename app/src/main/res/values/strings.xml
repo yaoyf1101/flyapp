@@ -23,7 +23,7 @@
     <string name="cancelfind">去登录</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_request_test">网络请求测试</string>
+    <string name="title_request_test">关闭侧滑菜单</string>
     <string name="title_exit">退出登录</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -3,7 +3,7 @@ package com.example.yaoyifei.yaoyfapplication.View.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Looper;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,23 +13,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TestFragment;
-import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
-import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +103,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
-                    HttpTest();
+                    mDrwerLayout.closeDrawers();
                 }else {
                     mDrwerLayout.closeDrawers();
                 }
@@ -241,23 +238,5 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    private void HttpTest(){
-        //发送请求，返回response响应，应该在这里面实现登录和注册的逻辑。
-        final String address = "http://47.102.199.28/flyapp/login";
-        HttpUtil.sedHttpRequest(address, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                Looper.prepare();
-                Toast.makeText(HomeActivity.this,"请求成功"+response,Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
-            @Override
-            public void onError(Exception e) {
-                Looper.prepare();
-                Toast.makeText(HomeActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
-        });
-    }
 }
 

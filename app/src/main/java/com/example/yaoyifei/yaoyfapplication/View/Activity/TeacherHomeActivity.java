@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -25,10 +24,7 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
-import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
-import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +100,8 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
-                    HttpTest();
+                    mDrwerLayout.closeDrawers();
+
                 }else {
                     mDrwerLayout.closeDrawers();
                 }
@@ -239,25 +236,5 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
         return true;
     }
 
-    private void HttpTest(){
-        //发送请求，返回response响应，应该在这里面实现登录和注册的逻辑。
-        final String address = "http://www.w3school.com.cn/example/xmle_examples.asp";
-        HttpUtil.sedHttpRequest(address, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                Looper.prepare();
-                boolean isNull = response.isEmpty();
-                Toast.makeText(TeacherHomeActivity.this,"请求成功",Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Looper.prepare();
-                Toast.makeText(TeacherHomeActivity.this,"请求失败",Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
-        });
-    }
 }
 

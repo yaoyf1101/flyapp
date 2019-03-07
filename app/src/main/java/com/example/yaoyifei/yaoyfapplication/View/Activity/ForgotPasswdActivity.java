@@ -115,6 +115,8 @@ public class ForgotPasswdActivity extends AppCompatActivity implements View.OnCl
                                 finish();
                             }
                         }).setNegativeButton("取消", null).show();
+                    }else if(response.equals("0")) {
+                        Toast.makeText(ForgotPasswdActivity.this,"您所修改的账号身份选择有误，请更正",Toast.LENGTH_SHORT).show();
                     }else {
                         Toast.makeText(ForgotPasswdActivity.this,"该账号不存在或身份选择错误",Toast.LENGTH_SHORT).show();
                     }
