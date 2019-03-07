@@ -8,7 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HttpUtil {
-    public static void sedHttpRequest(
+
+    public static void login(
             final String address, final String name,final String password,final int type,
             final HttpCallbackListener listener) {
         new Thread(new Runnable() {

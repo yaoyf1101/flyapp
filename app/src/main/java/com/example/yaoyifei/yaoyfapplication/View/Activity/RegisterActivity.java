@@ -1,12 +1,7 @@
 package com.example.yaoyifei.yaoyfapplication.View.Activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +15,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.yaoyifei.yaoyfapplication.SQLiteUtil.DBHelper;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
@@ -29,21 +23,21 @@ import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     final String address = "http://47.102.199.28/flyapp/addUser";
-    TextView mtv_backlogin ;
-    EditText mtv_newname;
-    EditText mtv_newpassword;
-    EditText mtv_ensurepassword;
-    Button mbtn_register;
-    RadioGroup mRadioGroup;//身份选择
-    RadioButton mRadioButtonStudent;//学生注册
-    RadioButton mRadioButtonTeacher;//教师注册
-    private DBHelper mDbHelper;
+    private TextView mtv_backlogin ;
+    private EditText mtv_newname;
+    private EditText mtv_newpassword;
+    private EditText mtv_ensurepassword;
+    private Button mbtn_register;
+    private RadioGroup mRadioGroup;//身份选择
+    private RadioButton mRadioButtonStudent;//学生注册
+    private RadioButton mRadioButtonTeacher;//教师注册
+   // private DBHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mDbHelper = new DBHelper(this, "Test.db", null, 2); //创建数据库
+    //    mDbHelper = new DBHelper(this, "Test.db", null, 2); //创建数据库
         initView();
         initListener();
         nameFilter();
@@ -59,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mRadioButtonStudent = findViewById(R.id.radio_stu);
         mRadioButtonTeacher = findViewById(R.id.radio_tea);
     }
-
 
     void initListener() {
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -79,12 +72,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mbtn_register.setOnClickListener(this);
     }
 
+    public void nameFilter() {
+        mtv_newname.setFilters(new InputFilter[]{
+                new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence source, int start, int end,
+                                               Spanned dest, int dstart, int dend) {
+                        for (int i = start; i < end; i++) {
+                            if (!Character.isLetterOrDigit(source.charAt(i)) &&
+                                    !Character.toString(source.charAt(i)).equals("_")) {
+                                Toast.makeText(RegisterActivity.this, "只能使用下划线、字母、数字、汉字注册！", Toast.LENGTH_SHORT).show();
+                                return "";
+                            }
+                        }
+                        return null;
+                    }
+                }
+        });
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.register_button:
-               // registerOrNot();
                 register();
                 break;
             case R.id.back_login:
@@ -97,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void register(){
+    public void register(){
         String newname = mtv_newname.getText().toString();
         String newpassword = mtv_newpassword.getText().toString();
         String ensurepassword = mtv_ensurepassword.getText().toString();
@@ -107,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }else if(newpassword.length()<6) {
             Toast.makeText(RegisterActivity.this,"请保持密码长度不小于6位",Toast.LENGTH_SHORT).show();
         }else {
-            HttpUtil.sedHttpRequest(address, newname, newpassword, usertype, new HttpCallbackListener() {
+            HttpUtil.login(address, newname, newpassword, usertype, new HttpCallbackListener() {
                 @Override
                 public void onFinish(String response) {
                     Looper.prepare();
@@ -121,7 +131,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 finish();
                             }
                         }).setNegativeButton("取消", null).show();
-                        // Toast.makeText(RegisterActivity.this,"注册成功"+response,Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(RegisterActivity.this,"注册失败,用户名已经存在！",Toast.LENGTH_SHORT).show();
                     }
@@ -130,12 +139,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onError(Exception e) {
                     Looper.prepare();
-                    Toast.makeText(RegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this,"网络请求失败",Toast.LENGTH_SHORT).show();
                     Looper.loop();
                 }
             });
         }
     }
+
     /**
      * 注册逻辑实现
      *//*
@@ -192,23 +202,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         db.close();
         return false;
     }*/
-
-    private void nameFilter() {
-        mtv_newname.setFilters(new InputFilter[]{
-                new InputFilter() {
-                    @Override
-                    public CharSequence filter(CharSequence source, int start, int end,
-                                               Spanned dest, int dstart, int dend) {
-                        for (int i = start; i < end; i++) {
-                            if (!Character.isLetterOrDigit(source.charAt(i)) &&
-                                    !Character.toString(source.charAt(i)).equals("_")) {
-                                Toast.makeText(RegisterActivity.this, "只能使用下划线、字母、数字、汉字注册！", Toast.LENGTH_SHORT).show();
-                                return "";
-                            }
-                        }
-                        return null;
-                    }
-                }
-        });
-    }
 }
