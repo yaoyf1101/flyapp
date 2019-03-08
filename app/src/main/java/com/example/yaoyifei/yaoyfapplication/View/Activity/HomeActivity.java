@@ -43,7 +43,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentPagerAdapter mAdapter;
     private NavigationView mNavigationView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

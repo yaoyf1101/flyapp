@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.SQLiteUtil.DBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,12 @@ public class StudentFragment extends Fragment {
     private int index;
     private List<Question> mList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    DBHelper mDbHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDbHelper = new DBHelper(getActivity(), "Test.db", null, 2); //创建数据库
     }
 
     @Override
@@ -78,7 +81,7 @@ public class StudentFragment extends Fragment {
     }
 
     public void initData(Boolean isToast) {
-        db = SQLiteDatabase.openDatabase("/data/data/com.example.yaoyifei.yaoyfapplication/databases/Test.db", null, SQLiteDatabase.OPEN_READWRITE);
+        db = mDbHelper.getReadableDatabase();
         mList = getQuestion();
 
         final int count = mList.size();

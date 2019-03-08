@@ -29,13 +29,11 @@ public class ForgotPasswdActivity extends AppCompatActivity implements View.OnCl
     private RadioGroup mRadioGroup;//身份选择
     private RadioButton mRadioButtonStudent;//学生
     private RadioButton mRadioButtonTeacher;//教师
-   // private DBHelper mDbHelper; //操作数据库的类
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_passwd);
-       // mDbHelper = new DBHelper(this, "User.db", null, 1); //创建数据库
         initView();
         initListener();
     }
@@ -133,56 +131,4 @@ public class ForgotPasswdActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    /*public void findPassword(){
-        String username = mtv_username.getText().toString();
-        String newpassword = mtv_newpassword.getText().toString();
-        String ensurepassword = mtv_ensurepassword.getText().toString();
-        String usertype = mRadioButtonStudent.isChecked()?0+"":1+"";
-        String yaoyifei = mtv_yaoyifei.getText().toString();
-
-        if(!CheckIsDataAlreadyInDBorNot(username,usertype)){
-            Toast.makeText(ForgotPasswdActivity.this,"该用户名不存在，请检查身份是否选择错误！",Toast.LENGTH_SHORT).show();
-        }else if(!newpassword.equals(ensurepassword)) {
-            Toast.makeText(ForgotPasswdActivity.this,"两次输入的密码不一致！",Toast.LENGTH_SHORT).show();
-        }else if(newpassword.length()<6) {
-            Toast.makeText(ForgotPasswdActivity.this,"请保持密码长度不小于6位",Toast.LENGTH_SHORT).show();
-        }else if(!yaoyifei.equals("yaoyifei")){
-            Toast.makeText(ForgotPasswdActivity.this,"作者不叫这个哦",Toast.LENGTH_SHORT).show();
-        }else {
-            updateUserInfo(username,newpassword,usertype);
-            Toast.makeText(ForgotPasswdActivity.this,"修改密码成功 ",Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ForgotPasswdActivity.this,LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-    *//**
-     * 检验用户名是否已经存在
-     *//*
-    public boolean CheckIsDataAlreadyInDBorNot(String value,String usertype) {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String Query = "Select * from usertable where username =? and usertype=?";
-        Cursor cursor = db.rawQuery(Query, new String[]{value,usertype});
-        if (cursor.getCount() > 0) {
-            cursor.close();
-            db.close();
-            return true;
-        }
-        cursor.close();
-        db.close();
-        return false;
-    }
-    *//**
-     * 根据用户名更新数据库中的用户信息
-     *//*
-    public void updateUserInfo(String username,String userpassword,String usertype) {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("username",username);
-        values.put("password", userpassword);
-        values.put("usertype",usertype);
-        db.update("usertable", values,"username=?",new String[]{username});
-        db.close();
-    }*/
 }

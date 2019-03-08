@@ -31,13 +31,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private RadioGroup mRadioGroup;//身份选择
     private RadioButton mRadioButtonStudent;//学生注册
     private RadioButton mRadioButtonTeacher;//教师注册
-   // private DBHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-    //    mDbHelper = new DBHelper(this, "Test.db", null, 2); //创建数据库
         initView();
         initListener();
         nameFilter();
@@ -146,60 +144,4 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    /**
-     * 注册逻辑实现
-     *//*
-    private void registerOrNot(){
-        String newname = mtv_newname.getText().toString();
-        String newpassword = mtv_newpassword.getText().toString();
-        String ensurepassword = mtv_ensurepassword.getText().toString();
-        String usertype = mRadioButtonStudent.isChecked()?0+"":1+"";
-
-        if(CheckIsDataAlreadyInDBorNot(newname)){
-            Toast.makeText(RegisterActivity.this,"该用户名已存在，请再输一次吧",Toast.LENGTH_SHORT).show();
-        }else if(!newpassword.equals(ensurepassword)) {
-            Toast.makeText(RegisterActivity.this,"两次输入的密码不一致，请再输一次吧",Toast.LENGTH_SHORT).show();
-        }else if(newpassword.length()<6) {
-            Toast.makeText(RegisterActivity.this,"请保持密码长度不小于6位",Toast.LENGTH_SHORT).show();
-        }else{
-            registerUserInfo(newname,newpassword,usertype);
-            if(usertype.equals("1")) {
-                Toast.makeText(RegisterActivity.this, "恭喜！注册成功为老师", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(RegisterActivity.this, "恭喜！注册成功为学生", Toast.LENGTH_SHORT).show();
-            }
-            Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
-    *//**
-     * 利用sql创建嵌入式数据库进行注册访问
-     *//*
-    private void registerUserInfo(String username, String userpassword,String usertype) {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("username", username);
-        values.put("password", userpassword);
-        values.put("usertype",usertype);
-        db.insert("usertable", null, values);
-        db.close();
-    }
-
-    *//**
-     * 检验用户名是否已经注册
-     *//*
-    private boolean CheckIsDataAlreadyInDBorNot(String value) {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String Query = "Select * from usertable where username =?";
-        Cursor cursor = db.rawQuery(Query, new String[]{value});
-        if (cursor.getCount() > 0) {
-            cursor.close();
-            db.close();
-            return true;
-        }
-        cursor.close();
-        db.close();
-        return false;
-    }*/
 }

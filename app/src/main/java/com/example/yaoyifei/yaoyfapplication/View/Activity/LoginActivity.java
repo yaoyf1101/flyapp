@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox mCheckBoxRememberPasswd;//记住密码
     private CheckBox mCheckBoxAutoLogin;//自动登录
     public static SP mSp;//处理用户偏好设置的工具类
-  //  public DBHelper mDbHelper;//数据库工具类
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         mContext = getApplicationContext();
         mSp = new SP(mContext);
-       // mDbHelper = new DBHelper(this, "Test.db", null, 2); //创建数据库
         initView();
         initListener();
     }
@@ -162,77 +160,6 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-
-//    private void loginOrNot() {
-//        String name = metName.getText().toString();
-//        String password = metPassword.getText().toString();
-//        String usertype = mRadioButtonStudent.isChecked()?0+"":1+"";
-//        boolean isRemember = mCheckBoxRememberPasswd.isChecked();
-//        boolean isStudent = mRadioButtonStudent.isChecked();
-//        boolean isTeacher = mRadioButtonTeacher.isChecked();
-//        boolean isAutoLogin = mCheckBoxAutoLogin.isChecked();
-//        mSp.save(name,password,isStudent,isTeacher,isRemember,isAutoLogin);
-//        if (isStudent) { //学生身份登录验证逻辑
-//            if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
-//                if (login(name,password,usertype)) {
-//                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Toast.makeText(LoginActivity.this, "账号或密码有误,请重新输入", Toast.LENGTH_SHORT).show();
-//                }
-//            } else if (TextUtils.isEmpty(name)) {
-//                Toast.makeText(LoginActivity.this, "请输入账号", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        if(isTeacher){ //教师身份登录验证逻辑
-//            if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
-//                if (login(name,password,usertype)) {
-//                    Intent intent = new Intent(LoginActivity.this, TeacherHomeActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                } else {
-//                    Toast.makeText(LoginActivity.this, "账号或密码有误,请重新输入", Toast.LENGTH_SHORT).show();
-//                }
-//            } else if (TextUtils.isEmpty(name)) {
-//                Toast.makeText(LoginActivity.this, "请输入账号", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-//
-//    /**
-//     * 验证登录信息
-//     * */
-//    private boolean login(String username, String password, String usertype) {
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//        String sql = "Select * from usertable where username=? and password=? and usertype=?";
-//        Cursor cursor = db.rawQuery(sql, new String[]{username, password, usertype});
-//        if (cursor.moveToFirst()) {
-//            cursor.close();
-//            db.close();
-//            return true;
-//        }
-//        db.close();
-//        return false;
-//    }
-//
-//    private boolean login(String username, String password) {
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//        String sql = "Select * from usertable where username=? and password=? ";
-//        Cursor cursor = db.rawQuery(sql, new String[]{username, password});
-//        if (cursor.moveToFirst()) {
-//            cursor.close();
-//            db.close();
-//            return true;
-//        }
-//        db.close();
-//        return false;
-//    }
-
 
     private void autoLogin() {
         Map<String, Object> data = mSp.read();
