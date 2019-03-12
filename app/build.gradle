@@ -29,4 +29,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.jakewharton:butterknife:7.0.0'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.google.code.gson:gson:2.7'
 }

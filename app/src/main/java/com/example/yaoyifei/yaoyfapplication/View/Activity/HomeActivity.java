@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,11 +23,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.yaoyifei.yaoyfapplication.Entity.QuestionServer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TestFragment;
+import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
+import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +41,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener {
 
+    final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
     private ViewPager mViewPager;
@@ -71,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFragments.add(BlankFragment.newInstance("111","111"));
         mFragments.add(new StudentFragment());
         mFragments.add(new TeacherFragment());
-        mFragments.add(new TestFragment());
+        mFragments.add(new QuestionFragment());
         // init view pager
 
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -102,7 +110,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
-                    mDrwerLayout.closeDrawers();
+                    HttpUtil.getQuestion(address, new HttpCallbackListener() {
+                        @Override
+                        public void onFinish(String response) {
+                            Gson gson = new Gson();
+                            List<QuestionServer> questionServers = gson.fromJson(response,new TypeToken<List<QuestionServer>>(){}.getType());
+                            for(QuestionServer questionServer : questionServers){
+                                Log.d("question", "onFinish: "+questionServer.getTitle());
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
                 }else {
                     mDrwerLayout.closeDrawers();
                 }
