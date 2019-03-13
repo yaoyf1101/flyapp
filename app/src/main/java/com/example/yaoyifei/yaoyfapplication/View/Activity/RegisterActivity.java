@@ -114,34 +114,37 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             Toast.makeText(RegisterActivity.this,"两次输入的密码不一致，请再输一次吧",Toast.LENGTH_SHORT).show();
         }else if(newpassword.length()<6) {
             Toast.makeText(RegisterActivity.this,"请保持密码长度不小于6位",Toast.LENGTH_SHORT).show();
+        }else if(usertype==1){
+            Toast.makeText(RegisterActivity.this,"请联系作者申请教师账号",Toast.LENGTH_SHORT).show();
         }else {
-            HttpUtil.login(address, newname, newpassword, usertype, new HttpCallbackListener() {
-                @Override
-                public void onFinish(String response) {
-                    Looper.prepare();
-                    if (response.equals("1")) {
-                        new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this).setTitle("恭喜，注册完成！")
-                                .setMessage("是否去登录").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }).setNegativeButton("取消", null).show();
-                    }else{
-                        Toast.makeText(RegisterActivity.this,"注册失败,用户名已经存在！",Toast.LENGTH_SHORT).show();
+                HttpUtil.login(address, newname, newpassword, usertype, new HttpCallbackListener() {
+                    @Override
+                    public void onFinish(String response) {
+                        Looper.prepare();
+                        if (response.equals("1")) {
+                            new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this).setTitle("恭喜，注册完成！")
+                                    .setMessage("是否去登录").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).setNegativeButton("取消", null).show();
+                        }else{
+                            Toast.makeText(RegisterActivity.this,"注册失败,用户名已经存在！",Toast.LENGTH_SHORT).show();
+                        }
+                        Looper.loop();
                     }
-                    Looper.loop();
-                }
-                @Override
-                public void onError(Exception e) {
-                    Looper.prepare();
-                    Toast.makeText(RegisterActivity.this,"网络请求失败",Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                }
-            });
+                    @Override
+                    public void onError(Exception e) {
+                        Looper.prepare();
+                        Toast.makeText(RegisterActivity.this,"网络请求失败",Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                });
+            }
         }
-    }
+
 
 }

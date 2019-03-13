@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:id="@+id/swipe_refresh">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-             <LinearLayout
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:orientation="horizontal" 
-                 android:padding="5dp">
              <TextView
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:text="题目区域"
-                 android:textSize="16sp"
-                 android:id="@+id/title"/>
-            </LinearLayout>
+                 android:textSize="20sp"
+                 android:id="@+id/title"
+                 android:textStyle="bold"
+                 android:layout_margin="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,14 +41,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/T"
-                        android:text="TRUE" />
+                        android:text="正确"
+                        android:textSize="12sp"/>
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/F"
-                        android:text="FALSE" />
+                        android:text="错误"
+                        android:textSize="12sp"/>
                 </RadioGroup>
 
             </LinearLayout>
@@ -107,28 +106,28 @@
                         android:id="@+id/A"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="大帅比"
+                        android:text="A"
                         android:layout_marginTop="5dp"/>
 
                     <RadioButton
                         android:id="@+id/B"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="参照A"
+                        android:text="B"
                         android:layout_marginTop="5dp"/>
 
                     <RadioButton
                         android:id="@+id/C"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="参照B"
+                        android:text="C"
                         android:layout_marginTop="5dp"/>
 
                     <RadioButton
                         android:id="@+id/D"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="参照C"
+                        android:text="D"
                         android:layout_marginTop="5dp"/>
                 </RadioGroup>
             </LinearLayout>
@@ -216,14 +215,94 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="简答题和填空题的作答区域"
+                android:hint="在此输入主观题答案"
                 android:layout_margin="5dp"
                 android:id="@+id/edit_area"
                 android:padding="5dp"
                 />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/answer_area"
+                android:orientation="horizontal"
+                android:layout_margin="5dp"
+                android:visibility="invisible">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="正确答案:"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:layout_margin="5dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/answer"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/analysis_area"
+                android:orientation="horizontal"
+                android:layout_margin="5dp"
+                android:visibility="invisible">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="答案解析:"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:layout_margin="5dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/analysis" />
+            </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/CountDownTimer"
+        android:visibility="invisible"
+        android:layout_gravity="center"
+        android:textColor="@color/colorAccent"
+        android:alpha="0.5"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/switch_area"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_previous"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="上一题" />
+
+        <Button
+            android:id="@+id/btn_start_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="开始考试" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="下一题" />
+
+    </LinearLayout>
 </LinearLayout>

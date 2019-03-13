@@ -1,12 +1,14 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,31 +27,39 @@ import com.google.gson.reflect.TypeToken;
 import java.util.List;
 
 public class QuestionFragment extends Fragment  {
-
+    private Button previous,next,starttest;
     private TextView title;
+    private TextView answer;
+    private TextView analysis;
+    private TextView countdowntimer;
     private LinearLayout torF;
     private LinearLayout radio;
+    private LinearLayout answer_area;
+    private LinearLayout analysis_area;
+    private LinearLayout checkbox;
+    private LinearLayout switch_area;
     private RadioGroup radioGroup;
     private RadioButton a;
     private RadioButton b;
     private RadioButton c;
     private RadioButton d;
-    private RadioButton t;
-    private RadioButton f;
     private CheckBox aa;
     private CheckBox bb;
     private CheckBox cc;
     private CheckBox dd;
-    private LinearLayout checkbox;
     private EditText editText;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<QuestionServer> mQuestionServers = null;
+    private int count;
+    private int index;
+    private int type;
     final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    //通过网络获取题目
     private void getQuestion() {
         HttpUtil.getQuestion(address, new HttpCallbackListener() {
             @Override
@@ -80,6 +90,7 @@ public class QuestionFragment extends Fragment  {
             public void onRefresh() {
                 getQuestion();
                 initView();
+              //  Toast.makeText(getActivity(), "刷新题库成功！", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -87,8 +98,6 @@ public class QuestionFragment extends Fragment  {
         title = (TextView) view.findViewById(R.id.title);
         //判断题区域
         torF = (LinearLayout) view.findViewById(R.id.TorF);
-        t = (RadioButton) view.findViewById(R.id.T);
-        f = (RadioButton) view.findViewById(R.id.F);
         //单选题区域
         radio = (LinearLayout) view.findViewById(R.id.radio);
         radioGroup = (RadioGroup) view.findViewById(R.id.radio_group);
@@ -98,67 +107,163 @@ public class QuestionFragment extends Fragment  {
         d = (RadioButton) view.findViewById(R.id.D);
         //多选题区域
         checkbox = (LinearLayout) view.findViewById(R.id.checkbox);
-        aa = view.findViewById(R.id.AA);
-        bb = view.findViewById(R.id.BB);
-        cc = view.findViewById(R.id.CC);
-        dd = view.findViewById(R.id.DD);
+        aa = (CheckBox) view.findViewById(R.id.AA);
+        bb = (CheckBox) view.findViewById(R.id.BB);
+        cc = (CheckBox) view.findViewById(R.id.CC);
+        dd = (CheckBox) view.findViewById(R.id.DD);
         //简答和填空作答区域
         editText = view.findViewById(R.id.edit_area);
+        //答案和解析区域（默认隐藏）
+        answer_area = (LinearLayout) view.findViewById(R.id.answer_area);
+        analysis_area = (LinearLayout) view.findViewById(R.id.analysis_area);
+        analysis_area = (LinearLayout) view.findViewById(R.id.analysis_area);
+        analysis = (TextView) view.findViewById(R.id.analysis);
+        answer = (TextView) view.findViewById(R.id.answer);
+        //切换题目和提交
+        switch_area = (LinearLayout) view.findViewById(R.id.switch_area);
+        next = (Button) view.findViewById(R.id.btn_next);
+        previous = (Button) view.findViewById(R.id.btn_previous);
+        starttest = (Button) view.findViewById(R.id.btn_start_test);
+        //倒计时
+        countdowntimer = view.findViewById(R.id.CountDownTimer);
     }
 
+    //初始化题目界面
     public void initView(){
-        if (mQuestionServers!=null) {
-            int count = mQuestionServers.size();//题目数量
+        if (mQuestionServers != null) {
+            count = mQuestionServers.size();//题目数量
             //当题库中没有题的时候
             if (count == 0) {
                 Toast.makeText(getActivity(), "当前题库没有题目,请刷新题库！", Toast.LENGTH_SHORT).show();
                 return;
             }
             //初始化题库中的第一道题
-            QuestionServer questionServer = mQuestionServers.get(0);
-            int type = getQuestionType(questionServer);
-            switch (type) {
-                case 1:
-                    title.setText(questionServer.getTitle());
-                    torF.setVisibility(View.GONE);
-                    checkbox.setVisibility(View.GONE);
-                    editText.setVisibility(View.GONE);
-                    a.setText(questionServer.getA());
-                    b.setText(questionServer.getB());
-                    c.setText(questionServer.getC());
-                    d.setText(questionServer.getD());
-                    break;
-                case 2:
-                    title.setText(questionServer.getTitle());
-                    radio.setVisibility(View.GONE);
-                    checkbox.setVisibility(View.GONE);
-                    editText.setVisibility(View.GONE);
-                    break;
-                case 3:
-                    title.setText(questionServer.getTitle());
-                    torF.setVisibility(View.GONE);
-                    radio.setVisibility(View.GONE);
-                    checkbox.setVisibility(View.GONE);
-                    break;
-                case 0:
-                    Toast.makeText(getActivity(), "未知的题目类型", Toast.LENGTH_SHORT).show();
-                    break;
-            }
+            index = 0;
+            QuestionServer questionServer = mQuestionServers.get(index);
+            type = getQuestionType(questionServer);
+            setViewFromType(type,questionServer);
+            swipeRefreshLayout.setEnabled(false);
             //切换题目的逻辑实现
-        }
+            //下一题
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (index < count-1) {
+                        index++;
+                        QuestionServer qs = mQuestionServers.get(index);
+                        type = getQuestionType(qs);
+                        setViewFromType(type,qs);
+                    } else {
+                        Toast.makeText(getActivity(), "最后一题啦！", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            //上一题
+            previous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (index > 0){
+                        index--;
+                        QuestionServer qs = mQuestionServers.get(index);
+                        type = getQuestionType(qs);
+                        setViewFromType(type,qs);
+                    }else {
+                        Toast.makeText(getActivity(), "已经是第一题啦！", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
+            starttest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //具体的数值由教师端提供
+                    setTimer(1);
+                }
+            });
+
+        }else{
+            Toast.makeText(getActivity(), "当前题库没有题目,请刷新题库！", Toast.LENGTH_SHORT).show();
+        }
     }
 
+    //获取题目类型
     public int getQuestionType(QuestionServer questionServer){
-        if (questionServer.getType().equals("选择")||questionServer.getType().equals("选择题")){
+        if (questionServer.getType().equals("单项选择题")||questionServer.getType().equals("单选题")){
             return 1;
-        }else if (questionServer.getType().equals("判断")||questionServer.getType().equals("判断题题")){
+        }else if (questionServer.getType().equals("判断")||questionServer.getType().equals("判断题")){
             return 2;
         }else if (questionServer.getType().equals("简答")||questionServer.getType().equals("简答题")||questionServer.getType().equals("填空")||questionServer.getType().equals("填空题")){
             return 3;
+        }else if (questionServer.getType().equals("多项选择题")||questionServer.getType().equals("多选题")){
+            return 4;
         }else {
             return 0;
         }
+    }
+
+    //根据不同的题目类型设置不同的界面
+    public void setViewFromType(int type,QuestionServer questionServer){
+        switch (type) {
+            case 1:
+                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");
+                torF.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                radio.setVisibility(View.VISIBLE);
+                a.setText(questionServer.getA());
+                b.setText(questionServer.getB());
+                c.setText(questionServer.getC());
+                d.setText(questionServer.getD());
+                break;
+            case 2:
+                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");                torF.setVisibility(View.VISIBLE);
+                radio.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                break;
+            case 3:
+                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");
+                editText.setVisibility(View.VISIBLE);
+                torF.setVisibility(View.GONE);
+                radio.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                break;
+            case 4:
+                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");
+                torF.setVisibility(View.GONE);
+                radio.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                checkbox.setVisibility(View.VISIBLE);
+                aa.setText(questionServer.getA());
+                bb.setText(questionServer.getB());
+                cc.setText(questionServer.getC());
+                dd.setText(questionServer.getD());
+                break;
+            case 0:
+                Toast.makeText(getActivity(), "未知的题目类型", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    public static String formatDuring(long mss) {
+        long minutes = (mss % (1000 * 60 * 60)) / (1000 * 60);
+        long seconds = (mss % (1000 * 60)) / 1000 ;
+        return  "距离考试结束还有：" + minutes + " 分钟 " + seconds + " 秒 ";
+    }
+
+    public void setTimer(int minutes){
+        countdowntimer.setVisibility(View.VISIBLE);
+        new CountDownTimer(1000*60*minutes+500,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countdowntimer.setText(formatDuring(millisUntilFinished));
+            }
+
+            @Override
+            public void onFinish() {
+                countdowntimer.setText("考试结束");
+            }
+        }.start();
     }
 
 }
