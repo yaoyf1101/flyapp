@@ -14,78 +14,78 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/swipe_refresh">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/tv_title"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="姚逸飞是？"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                <RadioGroup
-                    android:id="@+id/mRadioGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <!--四个选项-->
-
-                    <RadioButton
-                        android:id="@+id/RadioA"
+                    <TextView
+                        android:id="@+id/tv_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="大帅比"
-                        android:layout_marginTop="10dp"/>
+                        android:text="姚逸飞是？"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/RadioB"
+                    <RadioGroup
+                        android:id="@+id/mRadioGroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="参照A"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="10dp">
 
-                    <RadioButton
-                        android:id="@+id/RadioC"
+                        <!--四个选项-->
+
+                        <RadioButton
+                            android:id="@+id/RadioA"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="大帅比"
+                            android:layout_marginTop="10dp"/>
+
+                        <RadioButton
+                            android:id="@+id/RadioB"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="参照A"
+                            android:layout_marginTop="10dp"/>
+
+                        <RadioButton
+                            android:id="@+id/RadioC"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="参照B"
+                            android:layout_marginTop="10dp"/>
+
+                        <RadioButton
+                            android:id="@+id/RadioD"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="参照C"
+                            android:layout_marginTop="10dp"/>
+
+                    </RadioGroup>
+
+                    <!--正确答案，默认是隐藏的-->
+                    <TextView
+                        android:visibility="invisible"
+                        android:id="@+id/tv_result"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="参照B"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="20dp"
+                        android:text="初次做题请先下拉更新题库"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18sp"
+                        />
 
-                    <RadioButton
-                        android:id="@+id/RadioD"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="参照C"
-                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
 
-                </RadioGroup>
-
-                <!--正确答案，默认是隐藏的-->
-                <TextView
-                    android:visibility="invisible"
-                    android:id="@+id/tv_result"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="初次做题请先下拉更新题库"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="18sp"
-                    />
-
-            </LinearLayout>
-
-        </ScrollView>
+            </ScrollView>
         </android.support.v4.widget.SwipeRefreshLayout>
         <!--切换题目-->
         <LinearLayout

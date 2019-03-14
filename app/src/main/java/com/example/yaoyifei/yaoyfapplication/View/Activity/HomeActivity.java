@@ -27,6 +27,7 @@ import com.example.yaoyifei.yaoyfapplication.Entity.QuestionServer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.SetQuestionFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TestFragment;
@@ -76,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         // init fragment
         mFragments = new ArrayList<>(4);
-        mFragments.add(BlankFragment.newInstance("111","111"));
+        mFragments.add(new SetQuestionFragment());
         mFragments.add(new StudentFragment());
         mFragments.add(new TeacherFragment());
         mFragments.add(new QuestionFragment());
@@ -110,21 +111,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
-                    HttpUtil.getQuestion(address, new HttpCallbackListener() {
-                        @Override
-                        public void onFinish(String response) {
-                            Gson gson = new Gson();
-                            List<QuestionServer> questionServers = gson.fromJson(response,new TypeToken<List<QuestionServer>>(){}.getType());
-                            for(QuestionServer questionServer : questionServers){
-                                Log.d("question", "onFinish: "+questionServer.getTitle());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
+                    mDrwerLayout.closeDrawers();
                 }else {
                     mDrwerLayout.closeDrawers();
                 }

@@ -1,6 +1,8 @@
 package com.example.yaoyifei.yaoyfapplication.Entity;
 
-public class QuestionServer {
+import java.io.Serializable;
+
+public class QuestionServer implements Serializable {
 
     /**
      * a :

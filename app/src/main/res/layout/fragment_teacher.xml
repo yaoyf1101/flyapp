@@ -81,10 +81,10 @@
         android:orientation="horizontal"
         android:layout_gravity="center">
         <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/commit"
-        android:text="添加题目"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/commit"
+            android:text="添加题目"/>
 
         <Button
             android:id="@+id/fix"
@@ -93,16 +93,16 @@
             android:text="修改题目" />
 
         <Button
-        android:id="@+id/delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="删除题目" />
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="删除题目" />
 
         <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/deleteall"
-        android:text="清空题库"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/deleteall"
+            android:text="清空题库"/>
 
     </LinearLayout>
 
