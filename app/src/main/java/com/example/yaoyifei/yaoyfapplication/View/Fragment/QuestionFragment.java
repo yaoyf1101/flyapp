@@ -17,7 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.yaoyifei.yaoyfapplication.Entity.QuestionServer;
+import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
@@ -49,7 +49,7 @@ public class QuestionFragment extends Fragment  {
     private CheckBox dd;
     private EditText editText;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<QuestionServer> mQuestionServers = null;
+    private List<Question> mQuestions = null;
     private int count;
     private int index;
     private int type;
@@ -65,7 +65,7 @@ public class QuestionFragment extends Fragment  {
             @Override
             public void onFinish(String response) {
                 Gson gson = new Gson();
-                mQuestionServers = gson.fromJson(response,new TypeToken<List<QuestionServer>>(){}.getType());
+                mQuestions = gson.fromJson(response,new TypeToken<List<Question>>(){}.getType());
             }
             @Override
             public void onError(Exception e) {
@@ -130,8 +130,8 @@ public class QuestionFragment extends Fragment  {
 
     //初始化题目界面
     public void initView(){
-        if (mQuestionServers != null) {
-            count = mQuestionServers.size();//题目数量
+        if (mQuestions != null) {
+            count = mQuestions.size();//题目数量
             //当题库中没有题的时候
             if (count == 0) {
                 Toast.makeText(getActivity(), "当前题库没有题目,请刷新题库！", Toast.LENGTH_SHORT).show();
@@ -139,9 +139,9 @@ public class QuestionFragment extends Fragment  {
             }
             //初始化题库中的第一道题
             index = 0;
-            QuestionServer questionServer = mQuestionServers.get(index);
-            type = getQuestionType(questionServer);
-            setViewFromType(type,questionServer);
+            Question question = mQuestions.get(index);
+            type = getQuestionType(question);
+            setViewFromType(type, question);
             swipeRefreshLayout.setEnabled(false);
             //切换题目的逻辑实现
             //下一题
@@ -150,7 +150,7 @@ public class QuestionFragment extends Fragment  {
                 public void onClick(View v) {
                     if (index < count-1) {
                         index++;
-                        QuestionServer qs = mQuestionServers.get(index);
+                        Question qs = mQuestions.get(index);
                         type = getQuestionType(qs);
                         setViewFromType(type,qs);
                     } else {
@@ -164,7 +164,7 @@ public class QuestionFragment extends Fragment  {
                 public void onClick(View v) {
                     if (index > 0){
                         index--;
-                        QuestionServer qs = mQuestionServers.get(index);
+                        Question qs = mQuestions.get(index);
                         type = getQuestionType(qs);
                         setViewFromType(type,qs);
                     }else {
@@ -187,14 +187,14 @@ public class QuestionFragment extends Fragment  {
     }
 
     //获取题目类型
-    public int getQuestionType(QuestionServer questionServer){
-        if (questionServer.getType().equals("单项选择题")||questionServer.getType().equals("单选题")){
+    public int getQuestionType(Question question){
+        if (question.getType().equals("单选题")){
             return 1;
-        }else if (questionServer.getType().equals("判断")||questionServer.getType().equals("判断题")){
+        }else if (question.getType().equals("判断题")){
             return 2;
-        }else if (questionServer.getType().equals("简答")||questionServer.getType().equals("简答题")||questionServer.getType().equals("填空")||questionServer.getType().equals("填空题")){
+        }else if (question.getType().equals("主观题")){
             return 3;
-        }else if (questionServer.getType().equals("多项选择题")||questionServer.getType().equals("多选题")){
+        }else if (question.getType().equals("多选题")){
             return 4;
         }else {
             return 0;
@@ -202,42 +202,42 @@ public class QuestionFragment extends Fragment  {
     }
 
     //根据不同的题目类型设置不同的界面
-    public void setViewFromType(int type,QuestionServer questionServer){
+    public void setViewFromType(int type,Question question){
         switch (type) {
             case 1:
-                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
                 torF.setVisibility(View.GONE);
                 checkbox.setVisibility(View.GONE);
                 editText.setVisibility(View.GONE);
                 radio.setVisibility(View.VISIBLE);
-                a.setText(questionServer.getA());
-                b.setText(questionServer.getB());
-                c.setText(questionServer.getC());
-                d.setText(questionServer.getD());
+                a.setText(question.getA());
+                b.setText(question.getB());
+                c.setText(question.getC());
+                d.setText(question.getD());
                 break;
             case 2:
-                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");                torF.setVisibility(View.VISIBLE);
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");                torF.setVisibility(View.VISIBLE);
                 radio.setVisibility(View.GONE);
                 checkbox.setVisibility(View.GONE);
                 editText.setVisibility(View.GONE);
                 break;
             case 3:
-                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
                 editText.setVisibility(View.VISIBLE);
                 torF.setVisibility(View.GONE);
                 radio.setVisibility(View.GONE);
                 checkbox.setVisibility(View.GONE);
                 break;
             case 4:
-                title.setText(questionServer.getTitle()+"("+questionServer.getScore()+"分"+")");
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
                 torF.setVisibility(View.GONE);
                 radio.setVisibility(View.GONE);
                 editText.setVisibility(View.GONE);
                 checkbox.setVisibility(View.VISIBLE);
-                aa.setText(questionServer.getA());
-                bb.setText(questionServer.getB());
-                cc.setText(questionServer.getC());
-                dd.setText(questionServer.getD());
+                aa.setText(question.getA());
+                bb.setText(question.getB());
+                cc.setText(question.getC());
+                dd.setText(question.getD());
                 break;
             case 0:
                 Toast.makeText(getActivity(), "未知的题目类型", Toast.LENGTH_SHORT).show();

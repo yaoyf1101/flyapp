@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,18 +22,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.yaoyifei.yaoyfapplication.Entity.QuestionServer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.SetQuestionFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.StudentFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.TestFragment;
-import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
-import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +32,6 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener {
 
-    final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
     private ViewPager mViewPager;
@@ -77,12 +66,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         // init fragment
         mFragments = new ArrayList<>(4);
-        mFragments.add(new SetQuestionFragment());
-        mFragments.add(new StudentFragment());
-        mFragments.add(new TeacherFragment());
-        mFragments.add(new QuestionFragment());
-        // init view pager
+        mFragments.add(new BlankFragment());//指导学生操作的界面
+        mFragments.add(new QuestionFragment());//做题界面
+        mFragments.add(new QuestionFragment());//考试界面
+        mFragments.add(new QuestionFragment());//个人和同学的成绩界面
 
+        // init view pager
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(mAdapter);
 
@@ -106,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId()==R.id.navigation_exit){
+                    //退出登录的开关
                     loginActivity.clearData();
                     Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                     startActivity(intent);

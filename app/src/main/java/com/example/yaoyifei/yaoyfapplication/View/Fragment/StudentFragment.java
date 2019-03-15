@@ -17,7 +17,7 @@ import android.widget.RadioButton;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.yaoyifei.yaoyfapplication.Entity.Question;
+import com.example.yaoyifei.yaoyfapplication.Entity.QuestionTest;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.SQLiteUtil.DBHelper;
 
@@ -33,7 +33,7 @@ public class StudentFragment extends Fragment {
     private Button btn_down, btn_up,btn_commit;
     private int count;
     private int index;
-    private List<Question> mList;
+    private List<QuestionTest> mList;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     DBHelper mDbHelper;
 
@@ -103,7 +103,7 @@ public class StudentFragment extends Fragment {
         }
         final int[] corrent = {0};
 
-        Question q = mList.get(0);
+        QuestionTest q = mList.get(0);
         tv_title.setText(q.question);
         mRadioButtonA.setText(q.answerA);
         mRadioButtonB.setText(q.answerB);
@@ -120,7 +120,7 @@ public class StudentFragment extends Fragment {
             public void onClick(View v) {
                 if (corrent[0] > 0) {
                     corrent[0]--;
-                    Question q = mList.get(corrent[0]);
+                    QuestionTest q = mList.get(corrent[0]);
                     tv_title.setText(q.question);
                     mRadioButtonA.setText(q.answerA);
                     mRadioButtonB.setText(q.answerB);
@@ -160,7 +160,7 @@ public class StudentFragment extends Fragment {
                 //判断是否为最后一题
                 if (corrent[0] < count - 1) {
                     corrent[0]++;
-                    Question q = mList.get(corrent[0]);
+                    QuestionTest q = mList.get(corrent[0]);
 
                     tv_title.setText(q.question);
 
@@ -214,8 +214,8 @@ public class StudentFragment extends Fragment {
         });
     }
 
-    public List<Question> getQuestion() {
-        List<Question> list = new ArrayList<>();
+    public List<QuestionTest> getQuestion() {
+        List<QuestionTest> list = new ArrayList<>();
         //执行sql语句
         Cursor cursor = db.rawQuery("select * from question", null);
         if (cursor.getCount() > 0) {
@@ -224,7 +224,7 @@ public class StudentFragment extends Fragment {
             //遍历
             for (int i = 0; i < count; i++) {
                 cursor.moveToPosition(i);
-                Question question = new Question();
+                QuestionTest question = new QuestionTest();
                 //ID
                 question.ID = cursor.getInt(cursor.getColumnIndex("id"));
                 //问题
@@ -246,7 +246,7 @@ public class StudentFragment extends Fragment {
         return list;
     }
 
-    private void check(final List<Question> list) {
+    private void check(final List<QuestionTest> list) {
         final List<Integer> wrongList = checkAnswer(list);
 
         if (wrongList.size() == 0) {
@@ -256,7 +256,7 @@ public class StudentFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             index = 0;
                             count = list.size();
-                            Question q = list.get(0);
+                            QuestionTest q = list.get(0);
                             tv_title.setText(q.question);
                             mRadioButtonA.setText(q.answerA);
                             mRadioButtonB.setText(q.answerB);
@@ -270,7 +270,7 @@ public class StudentFragment extends Fragment {
                                 public void onClick(View v) {
                                     if (index < count-1) {
                                         index++;
-                                        Question q = list.get(index);
+                                        QuestionTest q = list.get(index);
                                         tv_title.setText(q.question);
                                         mRadioButtonA.setText(q.answerA);
                                         mRadioButtonB.setText(q.answerB);
@@ -290,7 +290,7 @@ public class StudentFragment extends Fragment {
                                 public void onClick(View v) {
                                     if (index > 0) {
                                         index--;
-                                        Question q = list.get(index);
+                                        QuestionTest q = list.get(index);
                                         tv_title.setText(q.question);
                                         mRadioButtonA.setText(q.answerA);
                                         mRadioButtonB.setText(q.answerB);
@@ -314,7 +314,7 @@ public class StudentFragment extends Fragment {
                             + "答错了" + wrongList.size() + "道题" + "\n" + "是否查看错题？").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    List<Question> newList = new ArrayList<Question>();
+                    List<QuestionTest> newList = new ArrayList<QuestionTest>();
                     for (int i = 0; i < wrongList.size(); i++) {
                         newList.add(list.get(wrongList.get(i)));
                     }
@@ -325,7 +325,7 @@ public class StudentFragment extends Fragment {
                     index = 0;
                     count = newList.size();
                     //更新当前显示的内容
-                    Question q = list.get(0);
+                    QuestionTest q = list.get(0);
                     tv_title.setText(q.question);
                     mRadioButtonA.setText(q.answerA);
                     mRadioButtonB.setText(q.answerB);
@@ -339,7 +339,7 @@ public class StudentFragment extends Fragment {
                         public void onClick(View v) {
                             if (index < count-1) {
                                 index++;
-                                Question q = list.get(index);
+                                QuestionTest q = list.get(index);
                                 tv_title.setText(q.question);
                                 mRadioButtonA.setText(q.answerA);
                                 mRadioButtonB.setText(q.answerB);
@@ -358,7 +358,7 @@ public class StudentFragment extends Fragment {
                         public void onClick(View v) {
                             if (index > 0) {
                                 index--;
-                                Question q = list.get(index);
+                                QuestionTest q = list.get(index);
                                 tv_title.setText(q.question);
                                 mRadioButtonA.setText(q.answerA);
                                 mRadioButtonB.setText(q.answerB);
@@ -378,7 +378,7 @@ public class StudentFragment extends Fragment {
 
     }
 
-    private List<Integer> checkAnswer (List < Question > list) {
+    private List<Integer> checkAnswer (List <QuestionTest> list) {
         List<Integer> wrongList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             //判断对错

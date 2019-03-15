@@ -1,9 +1,13 @@
 package com.example.yaoyifei.yaoyfapplication.tools;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -85,7 +89,7 @@ public class HttpUtil {
         }).start();
     }
 
-    public static void sendQuestion(final String address, final HttpCallbackListener listener) {
+    public static void sendQuestion(final String address, final String Json,final HttpCallbackListener listener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -98,8 +102,17 @@ public class HttpUtil {
                     connection.setReadTimeout(8000);
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
-                    DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    outputStream.writeBytes("[{\"a\":\"选A\",\"score\":\"10\",\"b\":\"选B\",\"c\":\"选C\",\"answer\":\"C\",\"d\":\"选D\",\"t\":\"\",\"f\":\"\",\"id\":3,\"analysis\":\"选C\",\"title\":\"多项选择题1\",\"type\":\"多项选择题\"},{\"a\":\"\",\"score\":\"2\",\"b\":\"\",\"c\":\"\",\"answer\":\"T\",\"d\":\"\",\"t\":\"\",\"f\":\"\",\"id\":2,\"analysis\":\"T\",\"title\":\"test2\",\"type\":\"判断\"},{\"a\":\"\",\"score\":\"2\",\"b\":\"\",\"c\":\"\",\"answer\":\"T\",\"d\":\"\",\"t\":\"1\",\"f\":\"0\",\"id\":1,\"analysis\":\"T\",\"title\":\"test \",\"type\":\"简答题\"}]");
+                    connection.setRequestProperty("Content-Type","application/json; charset=UTF-8");
+                    connection.setRequestProperty("accept","application/json");
+                    if (Json != null && !TextUtils.isEmpty(Json)) {
+                        byte[] writebytes = Json.getBytes();
+                        // 设置文件长度
+                        connection.setRequestProperty("Content-Length", String.valueOf(writebytes.length));
+                        OutputStream outwritestream = connection.getOutputStream();
+                        outwritestream.write(Json.getBytes());
+                        outwritestream.flush();
+                        outwritestream.close();
+                    }
                     InputStream in = connection.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();

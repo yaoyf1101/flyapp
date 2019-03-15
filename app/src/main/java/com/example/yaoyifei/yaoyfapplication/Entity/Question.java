@@ -1,69 +1,67 @@
 package com.example.yaoyifei.yaoyfapplication.Entity;
 
-public class Question {
+import java.io.Serializable;
 
-    //编号
-    public int ID;
-    //问题
-    public String question;
-    //四个选项
-    public String answerA;
-    public String answerB;
-    public String answerC;
-    public String answerD;
-    //答案
-    public String answer;
-    //详情
-    public String explaination;
-    //用户选中的答案
-    public String selectedAnswer;
+public class Question implements Serializable {
 
-    public int getID() {
-        return ID;
+    /**
+     * a :
+     * score : 10
+     * b :
+     * c :
+     * answer : java是个坑爹玩意儿
+     * d :
+     * t :
+     * f :
+     * id : 2
+     * analysis : java是个坑爹玩意儿
+     * title : 请问java是什么？
+     * type : 简答题
+     */
+
+    private String a;
+    private String score;//题目分值
+    private String b;
+    private String c;
+    private String answer;//正确答案
+    private String d;
+    private String t;
+    private String f;
+    private int id;//题目id
+    private String analysis;//答案解析
+    private String title;// 题目描述
+    private String type;//支持单选 多选 判断 填空 简答 该属性用来区分题型
+
+    public String getA() {
+        return a;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setA(String a) {
+        this.a = a;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getScore() {
+        return score;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setScore(String score) {
+        this.score = score;
     }
 
-    public String getAnswerA() {
-        return answerA;
+    public String getB() {
+        return b;
     }
 
-    public void setAnswerA(String answerA) {
-        this.answerA = answerA;
+    public void setB(String b) {
+        this.b = b;
     }
 
-    public String getAnswerB() {
-        return answerB;
+    public String getC() {
+        return c;
     }
 
-    public void setAnswerB(String answerB) {
-        this.answerB = answerB;
-    }
-
-    public String getAnswerC() {
-        return answerC;
-    }
-
-    public void setAnswerC(String answerC) {
-        this.answerC = answerC;
-    }
-
-    public String getAnswerD() {
-        return answerD;
-    }
-
-    public void setAnswerD(String answerD) {
-        this.answerD = answerD;
+    public void setC(String c) {
+        this.c = c;
     }
 
     public String getAnswer() {
@@ -74,19 +72,59 @@ public class Question {
         this.answer = answer;
     }
 
-    public String getExplaination() {
-        return explaination;
+    public String getD() {
+        return d;
     }
 
-    public void setExplaination(String explaination) {
-        this.explaination = explaination;
+    public void setD(String d) {
+        this.d = d;
     }
 
-    public String getSelectedAnswer() {
-        return selectedAnswer;
+    public String getT() {
+        return t;
     }
 
-    public void setSelectedAnswer(String selectedAnswer) {
-        this.selectedAnswer = selectedAnswer;
+    public void setT(String t) {
+        this.t = t;
+    }
+
+    public String getF() {
+        return f;
+    }
+
+    public void setF(String f) {
+        this.f = f;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(String analysis) {
+        this.analysis = analysis;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

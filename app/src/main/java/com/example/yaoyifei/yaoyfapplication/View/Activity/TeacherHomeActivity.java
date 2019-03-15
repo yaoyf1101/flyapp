@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.SetQuestionFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
 
 import java.util.ArrayList;
@@ -66,10 +68,10 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
 
         // init fragment
         mFragments = new ArrayList<>(4);
-        mFragments.add(BlankFragment.newInstance("111","111"));
-        mFragments.add(new TeacherFragment());
-        mFragments.add(new Fragment());
-        mFragments.add(new Fragment());
+        mFragments.add(BlankFragment.newInstance("111","111"));//主页是用来指导老师操作用的
+        mFragments.add(new SetQuestionFragment());//老师用来编辑题目的页面
+        mFragments.add(new QuestionFragment());//题目预览界面
+        mFragments.add(new Fragment());//学生做题情况界面
         // init view pager
 
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -95,6 +97,7 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId()==R.id.navigation_exit){
+                    //退出登录
                     loginActivity.clearData();
                     Intent intent = new Intent(TeacherHomeActivity.this, LoginActivity.class);
                     startActivity(intent);
