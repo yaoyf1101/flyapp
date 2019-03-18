@@ -39,6 +39,8 @@ public class QuestionFragment extends Fragment  {
     private LinearLayout checkbox;
     private LinearLayout switch_area;
     private RadioGroup radioGroup;
+    private RadioButton t;
+    private RadioButton f;
     private RadioButton a;
     private RadioButton b;
     private RadioButton c;
@@ -57,6 +59,7 @@ public class QuestionFragment extends Fragment  {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getQuestion();
     }
 
     //通过网络获取题目
@@ -88,9 +91,7 @@ public class QuestionFragment extends Fragment  {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getQuestion();
                 initView();
-              //  Toast.makeText(getActivity(), "刷新题库成功！", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -98,6 +99,8 @@ public class QuestionFragment extends Fragment  {
         title = (TextView) view.findViewById(R.id.title);
         //判断题区域
         torF = (LinearLayout) view.findViewById(R.id.TorF);
+        t = view.findViewById(R.id.T);
+        f = view.findViewById(R.id.F);
         //单选题区域
         radio = (LinearLayout) view.findViewById(R.id.radio);
         radioGroup = (RadioGroup) view.findViewById(R.id.radio_group);
@@ -216,7 +219,8 @@ public class QuestionFragment extends Fragment  {
                 d.setText(question.getD());
                 break;
             case 2:
-                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");                torF.setVisibility(View.VISIBLE);
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.VISIBLE);
                 radio.setVisibility(View.GONE);
                 checkbox.setVisibility(View.GONE);
                 editText.setVisibility(View.GONE);

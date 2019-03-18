@@ -42,13 +42,15 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="正确"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp"
+                        android:id="@+id/T"/>
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="错误"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp"
+                        android:id="@+id/F"/>
                 </RadioGroup>
 
             </LinearLayout>
