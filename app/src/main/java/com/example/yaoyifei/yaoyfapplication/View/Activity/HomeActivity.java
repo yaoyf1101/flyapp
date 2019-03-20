@@ -15,11 +15,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
@@ -40,6 +43,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private List<Fragment> mFragments;
     private FragmentPagerAdapter mAdapter;
     private NavigationView mNavigationView;
+    private TextView mShowName;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +52,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        username = intent.getStringExtra("name");
         initView();
     }
+
 
     private void initView() {
         // find view
@@ -56,6 +64,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mViewPager.setOffscreenPageLimit(3);
         mDrwerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
+        LayoutInflater factorys = LayoutInflater.from(HomeActivity.this);
+        final View view = factorys.inflate(R.layout.nav_header, mNavigationView);
+        mShowName =  view.findViewById(R.id.show_name);
+        if (username.isEmpty()){
+            Toast.makeText(this, "名字为空", Toast.LENGTH_SHORT).show();
+        }else{
+            mShowName.setText(username);
+        }
 
         //init actionBar
         ActionBar actionBar = getSupportActionBar();

@@ -5,11 +5,13 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -18,16 +20,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
+import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionFragment extends Fragment  {
-    private Button previous,next,starttest;
+    private Button previous,next,starttest,save,tips;
     private TextView title;
     private TextView answer;
     private TextView analysis;
@@ -55,6 +59,7 @@ public class QuestionFragment extends Fragment  {
     private int count;
     private int index;
     private int type;
+    public List<UserAnswer> answers;
     final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,14 +132,23 @@ public class QuestionFragment extends Fragment  {
         next = (Button) view.findViewById(R.id.btn_next);
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
+        save = view.findViewById(R.id.save_answer);
+        tips = view.findViewById(R.id.tips);
         //倒计时
         countdowntimer = view.findViewById(R.id.CountDownTimer);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initView();
     }
 
     //初始化题目界面
     public void initView(){
         if (mQuestions != null) {
             count = mQuestions.size();//题目数量
+            answers = new ArrayList<>(count);
             //当题库中没有题的时候
             if (count == 0) {
                 Toast.makeText(getActivity(), "当前题库没有题目,请刷新题库！", Toast.LENGTH_SHORT).show();
@@ -152,12 +166,22 @@ public class QuestionFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     if (index < count-1) {
+                        next.setEnabled(true);
+                        previous.setEnabled(true);
+                        Question question = mQuestions.get(index);
+                        type = getQuestionType(question);
+                        getYouAnswerFromType(index,type);
                         index++;
                         Question qs = mQuestions.get(index);
                         type = getQuestionType(qs);
                         setViewFromType(type,qs);
                     } else {
-                        Toast.makeText(getActivity(), "最后一题啦！", Toast.LENGTH_SHORT).show();
+                        next.setEnabled(false);
+                        previous.setEnabled(true);
+                        Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
+                        Question question = mQuestions.get(count-1);
+                        type = getQuestionType(question);
+                        getYouAnswerFromType(count-1,type);
                     }
                 }
             });
@@ -166,16 +190,21 @@ public class QuestionFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     if (index > 0){
+                        previous.setEnabled(true);
+                        next.setEnabled(true);
                         index--;
+                        next.setEnabled(true);
                         Question qs = mQuestions.get(index);
                         type = getQuestionType(qs);
                         setViewFromType(type,qs);
                     }else {
-                        Toast.makeText(getActivity(), "已经是第一题啦！", Toast.LENGTH_SHORT).show();
+                        previous.setEnabled(false);
+                        next.setEnabled(true);
+                        Toast.makeText(getActivity(), "已经是第一题了", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-
+            //开始考试
             starttest.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -183,9 +212,13 @@ public class QuestionFragment extends Fragment  {
                     setTimer(1);
                 }
             });
-
-        }else{
-            Toast.makeText(getActivity(), "当前题库没有题目,请刷新题库！", Toast.LENGTH_SHORT).show();
+            //保存提交
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "answers.size():" + answers.size(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -248,13 +281,50 @@ public class QuestionFragment extends Fragment  {
                 break;
         }
     }
-
+    public void getYouAnswerFromType(final int index, int type){
+        final UserAnswer userAnswer = new UserAnswer();
+        //判断题和单选题的监听
+        if (type==1||type==2){
+            if (a.isChecked()==true){ userAnswer.setAnswer("A"); }
+            if (b.isChecked()==true){ userAnswer.setAnswer("B"); }
+            if (c.isChecked()==true){ userAnswer.setAnswer("C"); }
+            if (d.isChecked()==true){ userAnswer.setAnswer("D"); }
+            if (t.isChecked()==true){ userAnswer.setAnswer("T"); }
+            if (f.isChecked()==true){ userAnswer.setAnswer("F"); }
+        }else if (type==4){
+            if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ABCD"); }
+            if (bb.isChecked()){ userAnswer.setAnswer("B"); }
+            if (cc.isChecked()){ userAnswer.setAnswer("C"); }
+            if (dd.isChecked()){ userAnswer.setAnswer("D"); }
+            if (aa.isChecked()){ userAnswer.setAnswer("A"); }
+            if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("ABC"); }
+            if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ABD"); }
+            if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ACD"); }
+            if (!aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("BCD"); }
+            if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("AB"); }
+            if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("AC"); }
+            if (aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("AD"); }
+            if (!aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("BC"); }
+            if (!aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("BD"); }
+            if (!aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("CD"); }
+        }else if (type==3){
+            if (!TextUtils.isEmpty(editText.getText().toString())){
+                userAnswer.setAnswer(editText.getText().toString());
+            }
+        }
+        if (TextUtils.isEmpty(userAnswer.getAnswer())){
+            Toast.makeText(getActivity(), "检测到未知的答案", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        answers.add(userAnswer);
+    }
+    //格式化时间
     public static String formatDuring(long mss) {
         long minutes = (mss % (1000 * 60 * 60)) / (1000 * 60);
         long seconds = (mss % (1000 * 60)) / 1000 ;
         return  "距离考试结束还有：" + minutes + " 分钟 " + seconds + " 秒 ";
     }
-
+    //设置定时任务
     public void setTimer(int minutes){
         countdowntimer.setVisibility(View.VISIBLE);
         new CountDownTimer(1000*60*minutes+500,1000) {

@@ -224,6 +224,25 @@
                 />
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tips"
+                    android:text="提示一下"
+                    android:visibility="invisible"
+                    android:layout_margin="5dp"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/save_answer"
+                    android:text="保存答案"
+                    android:layout_marginStart="220dp"
+                    android:layout_marginTop="5dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/answer_area"
                 android:orientation="horizontal"

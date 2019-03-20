@@ -15,11 +15,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
@@ -42,6 +44,8 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
     private List<Fragment> mFragments;
     private FragmentPagerAdapter mAdapter;
     private NavigationView mNavigationView;
+    private String username;
+    private TextView mShowName;
 
 
     @Override
@@ -50,6 +54,8 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        username = intent.getStringExtra("name");
         initView();
     }
 
@@ -58,6 +64,14 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
         mViewPager = findViewById(R.id.fragment_vp);
         mDrwerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
+        LayoutInflater factorys = LayoutInflater.from(TeacherHomeActivity.this);
+        final View view = factorys.inflate(R.layout.nav_header, mNavigationView);
+        mShowName =  view.findViewById(R.id.show_name);
+        if (username.isEmpty()){
+            Toast.makeText(this, "名字为空", Toast.LENGTH_SHORT).show();
+        }else{
+            mShowName.setText(username);
+        }
 
         //init actionBar
         ActionBar actionBar = getSupportActionBar();

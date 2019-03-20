@@ -121,8 +121,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(){
-        String name = metName.getText().toString();
-        String password = metPassword.getText().toString();
+        final String name = metName.getText().toString();
+        final String password = metPassword.getText().toString();
         int usertype = mRadioButtonStudent.isChecked()?0:1;
         boolean isRemember = mCheckBoxRememberPasswd.isChecked();
         boolean isStudent = mRadioButtonStudent.isChecked();
@@ -140,10 +140,12 @@ public class LoginActivity extends AppCompatActivity {
                     Looper.prepare();
                     if (response.equals("1")) {
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        intent.putExtra("name",name);
                         startActivity(intent);
                         finish();
                     } else if(response.equals("2")){
                         Intent intent = new Intent(LoginActivity.this, TeacherHomeActivity.class);
+                        intent.putExtra("name",name);
                         startActivity(intent);
                         finish();
                     }else {
@@ -174,11 +176,13 @@ public class LoginActivity extends AppCompatActivity {
             if ((Boolean) data.get("isAutoLogin")) {
                 if ((Boolean) data.get("isStudent")){
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    intent.putExtra("name",data.get("username").toString());
                     startActivity(intent);
                     finish();
                     return;
                 } else if ((Boolean) data.get("isTeacher")){
                     Intent intent = new Intent(LoginActivity.this, TeacherHomeActivity.class);
+                    intent.putExtra("name",data.get("username").toString());
                     startActivity(intent);
                     finish();
                     return;

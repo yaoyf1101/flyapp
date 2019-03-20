@@ -12,5 +12,18 @@
         android:id="@+id/head_image"
         android:layout_centerInParent="true"
         android:src="@mipmap/head_test"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/show_name"
+        android:layout_below="@+id/head_image"
+        android:text="用户名字"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:singleLine="true"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>
