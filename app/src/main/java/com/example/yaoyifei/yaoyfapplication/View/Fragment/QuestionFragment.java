@@ -25,6 +25,7 @@ import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
+import com.example.yaoyifei.yaoyfapplication.tools.SimilarityUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -101,7 +102,7 @@ public class QuestionFragment extends Fragment  {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-        //题目区域
+        //题目区域mQuestions.get(i).getAnswer()
         title = (TextView) view.findViewById(R.id.title);
         //判断题区域
         torF = (LinearLayout) view.findViewById(R.id.TorF);
@@ -217,19 +218,6 @@ public class QuestionFragment extends Fragment  {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (answers.size()< count){
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                        dialog.setMessage("是否要提交");
-                        dialog.setTitle("题目尚未做完");
-                        dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getActivity(), "提交成功", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        dialog.setNegativeButton("否",null);
-                        dialog.show();
-                    }else {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                         dialog.setMessage("是否查看考试结果");
                         dialog.setTitle("提交成功");
@@ -243,11 +231,11 @@ public class QuestionFragment extends Fragment  {
                         });
                         dialog.setNegativeButton("否",null);
                         dialog.show();
-                    }
                 }
             });
         }
     }
+    //测试答案是否提交正确
     public String  showAnswers() {
         String result = "";
         for(int i=0;i<answers.size();i++){
@@ -312,10 +300,10 @@ public class QuestionFragment extends Fragment  {
                 dd.setText(question.getD());
                 break;
             case 0:
-                Toast.makeText(getActivity(), "未知的题目类型", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
+    //通过类型获取题目答案
     public void getYouAnswerFromType(final int index, int type){
         final UserAnswer userAnswer = new UserAnswer();
         //判断题和单选题的监听
@@ -328,10 +316,10 @@ public class QuestionFragment extends Fragment  {
             if (f.isChecked()==true){ userAnswer.setAnswer("F"); }
         }else if (type==4){
             if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ABCD"); }
-            if (bb.isChecked()){ userAnswer.setAnswer("B"); }
-            if (cc.isChecked()){ userAnswer.setAnswer("C"); }
-            if (dd.isChecked()){ userAnswer.setAnswer("D"); }
-            if (aa.isChecked()){ userAnswer.setAnswer("A"); }
+            if (!aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("B"); }
+            if (!aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("C"); }
+            if (!aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("D"); }
+            if (aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("A"); }
             if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("ABC"); }
             if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ABD"); }
             if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ACD"); }
@@ -348,7 +336,7 @@ public class QuestionFragment extends Fragment  {
             }
         }
         if (TextUtils.isEmpty(userAnswer.getAnswer())){
-            Toast.makeText(getActivity(), "未检测到答案", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "没有检测到上一题的答案,请点击'上一题'作答", Toast.LENGTH_SHORT).show();
             return;
         }
         if (answers.size()<count ){
@@ -381,17 +369,38 @@ public class QuestionFragment extends Fragment  {
     }
     //核对答案给出分数
     public int CheckAnswer(){
-        int score=0;
+        int score1=0;
+        int score2=0;
         for (int i=0;i<mQuestions.size();i++){
             if (mQuestions.get(i).getType().equals("主观题")){
-
-            }else{
                 if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
+                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                }else if (SimilarityUtils.Index_BF(answers.get(i).getAnswer(),mQuestions.get(i).getAnswer())>=0){
+                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                }else if (SimilarityUtils.levenshtein(mQuestions.get(i).getAnswer().toLowerCase(),answers.get(i).getAnswer().toLowerCase())>0.5){
+                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore())/2;
+                }else {
+                    score1 = score1 + 0;
+                }
+            }else{
+                if (mQuestions.get(i).getType().equals("多选题")) {
+                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
+                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                    }else {
+                        if (SimilarityUtils.Index_BF(mQuestions.get(i).getAnswer(),answers.get(i).getAnswer())!=-1){
+                            score2 = score2 + (Integer.parseInt(mQuestions.get(i).getScore())/2);
+                        }
+                    }
+                }else {
+                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
+                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                    }
                 }
             }
-
         }
-        return score;
+        return score1+score2;
     }
+
 }
+
+
