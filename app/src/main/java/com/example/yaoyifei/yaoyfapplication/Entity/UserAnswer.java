@@ -10,4 +10,11 @@ public class UserAnswer {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
+
+    @Override
+    public String toString() {
+        return "UserAnswer{" +
+                "answer='" + answer + '\'' +
+                '}';
+    }
 }

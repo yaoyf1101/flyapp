@@ -1,5 +1,7 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -11,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionFragment extends Fragment  {
-    private Button previous,next,starttest,save,tips;
+    private Button previous,next,starttest,save;
     private TextView title;
     private TextView answer;
     private TextView analysis;
@@ -133,7 +134,7 @@ public class QuestionFragment extends Fragment  {
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
         save = view.findViewById(R.id.save_answer);
-        tips = view.findViewById(R.id.tips);
+       // tips = view.findViewById(R.id.tips);
         //倒计时
         countdowntimer = view.findViewById(R.id.CountDownTimer);
     }
@@ -216,12 +217,46 @@ public class QuestionFragment extends Fragment  {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "answers.size():" + answers.size(), Toast.LENGTH_SHORT).show();
+                    if (answers.size()< count){
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                        dialog.setMessage("是否要提交");
+                        dialog.setTitle("题目尚未做完");
+                        dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getActivity(), "提交成功", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        dialog.setNegativeButton("否",null);
+                        dialog.show();
+                    }else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                        dialog.setMessage("是否查看考试结果");
+                        dialog.setTitle("提交成功");
+                        dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
+                                int  result = CheckAnswer();
+                                Toast.makeText(getActivity(), "你的得分是："+result+"", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        dialog.setNegativeButton("否",null);
+                        dialog.show();
+                    }
                 }
             });
         }
     }
-
+    public String  showAnswers() {
+        String result = "";
+        for(int i=0;i<answers.size();i++){
+            if(answers.get(i)!=null){
+                result=result+answers.get(i).toString();
+            }
+        }
+        return result;
+    }
     //获取题目类型
     public int getQuestionType(Question question){
         if (question.getType().equals("单选题")){
@@ -313,10 +348,15 @@ public class QuestionFragment extends Fragment  {
             }
         }
         if (TextUtils.isEmpty(userAnswer.getAnswer())){
-            Toast.makeText(getActivity(), "检测到未知的答案", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "未检测到答案", Toast.LENGTH_SHORT).show();
             return;
         }
-        answers.add(userAnswer);
+        if (answers.size()<count ){
+            answers.add(index,userAnswer);
+        }else {
+            return;
+        }
+
     }
     //格式化时间
     public static String formatDuring(long mss) {
@@ -339,5 +379,19 @@ public class QuestionFragment extends Fragment  {
             }
         }.start();
     }
+    //核对答案给出分数
+    public int CheckAnswer(){
+        int score=0;
+        for (int i=0;i<mQuestions.size();i++){
+            if (mQuestions.get(i).getType().equals("主观题")){
 
+            }else{
+                if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
+                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
+                }
+            }
+
+        }
+        return score;
+    }
 }

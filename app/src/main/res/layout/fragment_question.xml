@@ -222,7 +222,7 @@
                 android:id="@+id/edit_area"
                 android:padding="5dp"
                 />
-            <LinearLayout
+<!--            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <Button
@@ -232,15 +232,9 @@
                     android:text="提示一下"
                     android:visibility="invisible"
                     android:layout_margin="5dp"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/save_answer"
-                    android:text="保存答案"
-                    android:layout_marginStart="220dp"
-                    android:layout_marginTop="5dp"/>
 
-            </LinearLayout>
+            </LinearLayout>-->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -317,6 +311,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="开始考试" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/save_answer"
+            android:text="结束考试"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/btn_next"
