@@ -146,7 +146,59 @@ public class QuestionFragment extends Fragment  {
         initView();
     }
 
-    //初始化题目界面
+    //题目界面
+    public void initAllView(){
+        if (mQuestions != null) {
+            count = mQuestions.size();//题目数量
+            answers = new ArrayList<>(count);
+            save.setVisibility(View.GONE);
+            starttest.setVisibility(View.GONE);
+            //初始化题库中的第一道题
+            index = 0;
+            Question question = mQuestions.get(index);
+            type = getQuestionType(question);
+            setAllViewFromType(type, question);
+            swipeRefreshLayout.setEnabled(false);
+            //切换题目的逻辑实现
+            //下一题
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (index < count-1) {
+                        next.setEnabled(true);
+                        previous.setEnabled(true);
+                        index++;
+                        Question qs = mQuestions.get(index);
+                        type = getQuestionType(qs);
+                        setAllViewFromType(type,qs);
+                    } else {
+                        next.setEnabled(false);
+                        previous.setEnabled(true);
+                        Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            //上一题
+            previous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (index > 0){
+                        previous.setEnabled(true);
+                        next.setEnabled(true);
+                        index--;
+                        Question qs = mQuestions.get(index);
+                        type = getQuestionType(qs);
+                        setAllViewFromType(type,qs);
+                    }else {
+                        previous.setEnabled(false);
+                        next.setEnabled(true);
+                        Toast.makeText(getActivity(), "已经是第一题了", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
     public void initView(){
         if (mQuestions != null) {
             count = mQuestions.size();//题目数量
@@ -195,7 +247,6 @@ public class QuestionFragment extends Fragment  {
                         previous.setEnabled(true);
                         next.setEnabled(true);
                         index--;
-                        next.setEnabled(true);
                         Question qs = mQuestions.get(index);
                         type = getQuestionType(qs);
                         setViewFromType(type,qs);
@@ -218,19 +269,21 @@ public class QuestionFragment extends Fragment  {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                        dialog.setMessage("是否查看考试结果");
-                        dialog.setTitle("提交成功");
-                        dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
-                                int  result = CheckAnswer();
-                                Toast.makeText(getActivity(), "你的得分是："+result+"", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        dialog.setNegativeButton("否",null);
-                        dialog.show();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+                    dialog.setMessage("是否查看考试结果");
+                    dialog.setTitle("提交成功");
+                    dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
+                            int  result = CheckAnswer();
+                            Toast.makeText(getActivity(), "你的得分是："+result+"", Toast.LENGTH_SHORT).show();
+                            next.setEnabled(true);
+                            initAllView();
+                        }
+                    });
+                    dialog.setNegativeButton("否",null);
+                    dialog.show();
                 }
             });
         }
@@ -303,15 +356,77 @@ public class QuestionFragment extends Fragment  {
                 break;
         }
     }
+
+    //根据不同的题目类型设置不同的界面
+    public void setAllViewFromType(int type,Question question){
+        switch (type) {
+            case 1:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                radio.setVisibility(View.VISIBLE);
+                a.setText(question.getA());
+                b.setText(question.getB());
+                c.setText(question.getC());
+                d.setText(question.getD());
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                break;
+            case 2:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.VISIBLE);
+                radio.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                break;
+            case 3:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                editText.setVisibility(View.VISIBLE);
+                torF.setVisibility(View.GONE);
+                radio.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                break;
+            case 4:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.GONE);
+                radio.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                checkbox.setVisibility(View.VISIBLE);
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                aa.setText(question.getA());
+                bb.setText(question.getB());
+                cc.setText(question.getC());
+                dd.setText(question.getD());
+                break;
+            case 0:
+                break;
+        }
+    }
+
     //通过类型获取题目答案
     public void getYouAnswerFromType(final int index, int type){
         final UserAnswer userAnswer = new UserAnswer();
         //判断题和单选题的监听
-        if (type==1||type==2){
+        if (type==1){
             if (a.isChecked()==true){ userAnswer.setAnswer("A"); }
             if (b.isChecked()==true){ userAnswer.setAnswer("B"); }
             if (c.isChecked()==true){ userAnswer.setAnswer("C"); }
             if (d.isChecked()==true){ userAnswer.setAnswer("D"); }
+        }else if (type==2){
             if (t.isChecked()==true){ userAnswer.setAnswer("T"); }
             if (f.isChecked()==true){ userAnswer.setAnswer("F"); }
         }else if (type==4){

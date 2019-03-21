@@ -253,7 +253,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:id="@+id/answer"/>
+                    android:id="@+id/answer"
+                    android:layout_margin="5dp"
+                    android:gravity="bottom"/>
             </LinearLayout>
 
             <LinearLayout
@@ -274,7 +276,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:id="@+id/analysis" />
+                    android:id="@+id/analysis"
+                    android:layout_margin="5dp"
+                    android:gravity="bottom"/>
             </LinearLayout>
 
         </LinearLayout>

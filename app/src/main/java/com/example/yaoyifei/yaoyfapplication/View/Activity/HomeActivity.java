@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,9 +82,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // init fragment
         mFragments = new ArrayList<>(4);
         mFragments.add(new BlankFragment());//指导学生操作的界面
-        mFragments.add(new QuestionFragment());//做题界面
-        mFragments.add(new QuestionFragment());//考试界面
-        mFragments.add(new QuestionFragment());//个人和同学的成绩界面
+        mFragments.add(new QuestionFragment());//考试以及查看做题情况的界面
+        mFragments.add(new Fragment());//做题情况界面
+        mFragments.add(new Fragment());//个人和同学的成绩界面
 
         // init view pager
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -245,6 +244,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.count){
+            mViewPager.setCurrentItem(3,true);
             Toast.makeText(HomeActivity.this,"统计功能正在努力实现中，敬请期待",Toast.LENGTH_SHORT).show();
         }else{
             mDrwerLayout.openDrawer(Gravity.LEFT);

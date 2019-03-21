@@ -26,9 +26,8 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragmentTeacher;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.SetQuestionFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.TeacherFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +81,9 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
 
         // init fragment
         mFragments = new ArrayList<>(4);
-        mFragments.add(BlankFragment.newInstance("111","111"));//主页是用来指导老师操作用的
+        mFragments.add(new BlankFragment());//主页是用来指导老师操作用的
         mFragments.add(new SetQuestionFragment());//老师用来编辑题目的页面
-        mFragments.add(new QuestionFragment());//题目预览界面
+        mFragments.add(new QuestionFragmentTeacher());//题目预览界面
         mFragments.add(new Fragment());//学生做题情况界面
         // init view pager
 
