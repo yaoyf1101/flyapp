@@ -30,4 +30,6 @@ dependencies {
     implementation 'com.jakewharton:butterknife:7.0.0'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.google.code.gson:gson:2.7'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
 }

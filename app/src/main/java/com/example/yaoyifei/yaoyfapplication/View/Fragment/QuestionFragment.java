@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.View.Activity.HomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.SimilarityUtils;
@@ -63,6 +64,8 @@ public class QuestionFragment extends Fragment  {
     private int type;
     public List<UserAnswer> answers;
     final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
+
+    private int[] scoreUser = new int[3];
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -276,10 +279,9 @@ public class QuestionFragment extends Fragment  {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
-                            int  result = CheckAnswer();
-                            Toast.makeText(getActivity(), "你的得分是："+result+"", Toast.LENGTH_SHORT).show();
+                         //   Toast.makeText(getActivity(), "你的得分是："+result+"", Toast.LENGTH_SHORT).show();
                             next.setEnabled(true);
-                            initAllView();
+                         //   initAllView();
                         }
                     });
                     dialog.setNegativeButton("否",null);
@@ -483,9 +485,11 @@ public class QuestionFragment extends Fragment  {
         }.start();
     }
     //核对答案给出分数
-    public int CheckAnswer(){
+    public int[] CheckAnswer(){
         int score1=0;
-        int score2=0;
+        int score2=0;//多选题分数
+        int score3=0;//单选题分数
+        int score4=0;//判断题分数
         for (int i=0;i<mQuestions.size();i++){
             if (mQuestions.get(i).getType().equals("主观题")){
                 if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
@@ -506,15 +510,23 @@ public class QuestionFragment extends Fragment  {
                             score2 = score2 + (Integer.parseInt(mQuestions.get(i).getScore())/2);
                         }
                     }
-                }else {
+                }else if (mQuestions.get(i).getType().equals("单选题")){
                     if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                        score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+                    }
+                }else if(mQuestions.get(i).getType().equals("判断题")){
+                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
+                        score4 = score4 + Integer.parseInt(mQuestions.get(i).getScore());
                     }
                 }
             }
         }
-        return score1+score2;
+        scoreUser[0] = score2;
+        scoreUser[1] = score3;
+        scoreUser[2] = score4;
+        return scoreUser;
     }
+
 
 }
 

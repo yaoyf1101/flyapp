@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.ChartFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
 
 import java.util.ArrayList;
@@ -43,7 +44,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private FragmentPagerAdapter mAdapter;
     private NavigationView mNavigationView;
     private TextView mShowName;
-    private String username;
+    private String username;//从登录界面传过来的用户名字
+    private int time=0;//从教师主界面传过来的考试时间 atoa
+    private int[] scores = new int[3];//从教师界面传过来的客观题题目满分分数到统计界面 atoa
+    private  int[] scoreUser = new int[3];//考生考试结束得到的分数.将会传给统计界面 ftof
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFragments = new ArrayList<>(4);
         mFragments.add(new BlankFragment());//指导学生操作的界面
         mFragments.add(new QuestionFragment());//考试以及查看做题情况的界面
-        mFragments.add(new Fragment());//做题情况界面
+        mFragments.add(new ChartFragment());//做题情况界面
         mFragments.add(new Fragment());//个人和同学的成绩界面
 
         // init view pager
