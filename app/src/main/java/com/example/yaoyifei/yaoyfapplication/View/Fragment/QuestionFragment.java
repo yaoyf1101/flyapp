@@ -1,11 +1,13 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,12 +28,14 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Activity.HomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
+import com.example.yaoyifei.yaoyfapplication.tools.SP;
 import com.example.yaoyifei.yaoyfapplication.tools.SimilarityUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QuestionFragment extends Fragment  {
     private Button previous,next,starttest,save;
@@ -65,10 +69,16 @@ public class QuestionFragment extends Fragment  {
     public List<UserAnswer> answers;
     final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
 
-    private int[] scoreUser = new int[3];
+    private Context mContext;
+    private SP mSp;
+    private Boolean isBegin = false;
+    private Boolean isEnd = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getContext();
+        mSp = new SP(mContext);
         getQuestion();
     }
 
@@ -138,7 +148,6 @@ public class QuestionFragment extends Fragment  {
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
         save = view.findViewById(R.id.save_answer);
-       // tips = view.findViewById(R.id.tips);
         //倒计时
         countdowntimer = view.findViewById(R.id.CountDownTimer);
     }
@@ -147,6 +156,7 @@ public class QuestionFragment extends Fragment  {
     public void onResume() {
         super.onResume();
         initView();
+        getScoreFromAnswer();
     }
 
     //题目界面
@@ -222,41 +232,51 @@ public class QuestionFragment extends Fragment  {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (index < count-1) {
-                        next.setEnabled(true);
-                        previous.setEnabled(true);
-                        Question question = mQuestions.get(index);
-                        type = getQuestionType(question);
-                        getYouAnswerFromType(index,type);
-                        index++;
-                        Question qs = mQuestions.get(index);
-                        type = getQuestionType(qs);
-                        setViewFromType(type,qs);
-                    } else {
-                        next.setEnabled(false);
-                        previous.setEnabled(true);
-                        Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
-                        Question question = mQuestions.get(count-1);
-                        type = getQuestionType(question);
-                        getYouAnswerFromType(count-1,type);
+                    if (isBegin&&!isEnd) {
+                        if (index < count - 1) {
+                            next.setEnabled(true);
+                            previous.setEnabled(true);
+                            Question question = mQuestions.get(index);
+                            type = getQuestionType(question);
+                            getYouAnswerFromType(index, type);
+                            index++;
+                            Question qs = mQuestions.get(index);
+                            type = getQuestionType(qs);
+                            setViewFromType(type, qs);
+                        } else {
+                            next.setEnabled(false);
+                            previous.setEnabled(true);
+                            Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
+                            Question question = mQuestions.get(count - 1);
+                            type = getQuestionType(question);
+                            getYouAnswerFromType(count - 1, type);
+                        }
+                    }else {
+                        Toast.makeText(getActivity(), "考试未开始或者考试已结束", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+
             //上一题
             previous.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (index > 0){
-                        previous.setEnabled(true);
-                        next.setEnabled(true);
-                        index--;
-                        Question qs = mQuestions.get(index);
-                        type = getQuestionType(qs);
-                        setViewFromType(type,qs);
+                    if (isBegin && !isEnd) {
+                        if (index > 0) {
+                            previous.setEnabled(true);
+                            next.setEnabled(true);
+                            index--;
+                            Question qs = mQuestions.get(index);
+                            type = getQuestionType(qs);
+                            setViewFromType(type, qs);
+                        } else {
+                            previous.setEnabled(false);
+                            next.setEnabled(true);
+                            Toast.makeText(getActivity(), "已经是第一题了", Toast.LENGTH_SHORT).show();
+                        }
                     }else {
-                        previous.setEnabled(false);
-                        next.setEnabled(true);
-                        Toast.makeText(getActivity(), "已经是第一题了", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "考试未开始或者考试已结束", Toast.LENGTH_SHORT).show();
+
                     }
                 }
             });
@@ -265,7 +285,11 @@ public class QuestionFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     //具体的数值由教师端提供
-                    setTimer(1);
+                    isBegin=true;
+                    starttest.setEnabled(false);
+                    Map<String, Object> data = mSp.load();
+                    int time = (Integer) data.get("time");
+                    setTimer(time);
                 }
             });
             //保存提交
@@ -278,10 +302,13 @@ public class QuestionFragment extends Fragment  {
                     dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
-                         //   Toast.makeText(getActivity(), "你的得分是："+result+"", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
+                            isEnd=true;
                             next.setEnabled(true);
-                         //   initAllView();
+                            CheckAnswerToScore();
+                            ChartFragment.showBarChartMore();
+                            ViewPager vp = HomeActivity.getmViewPager();
+                            vp.setCurrentItem(2);
                         }
                     });
                     dialog.setNegativeButton("否",null);
@@ -290,6 +317,7 @@ public class QuestionFragment extends Fragment  {
             });
         }
     }
+
     //测试答案是否提交正确
     public String  showAnswers() {
         String result = "";
@@ -481,53 +509,72 @@ public class QuestionFragment extends Fragment  {
             @Override
             public void onFinish() {
                 countdowntimer.setText("考试结束");
+                isEnd=true;
             }
         }.start();
     }
     //核对答案给出分数
-    public int[] CheckAnswer(){
-        int score1=0;
-        int score2=0;//多选题分数
-        int score3=0;//单选题分数
-        int score4=0;//判断题分数
+    public void CheckAnswerToScore(){
+        float score=0;//主观题分数
+        float score1=0;//多选题分数
+        float score2=0;//单选题分数
+        float score3=0;//判断题分数
         for (int i=0;i<mQuestions.size();i++){
             if (mQuestions.get(i).getType().equals("主观题")){
                 if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
                 }else if (SimilarityUtils.Index_BF(answers.get(i).getAnswer(),mQuestions.get(i).getAnswer())>=0){
-                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
                 }else if (SimilarityUtils.levenshtein(mQuestions.get(i).getAnswer().toLowerCase(),answers.get(i).getAnswer().toLowerCase())>0.5){
-                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore())/2;
+                    score = score + Integer.parseInt(mQuestions.get(i).getScore())/2;
                 }else {
-                    score1 = score1 + 0;
+                    score = score + 0;
                 }
             }else{
                 if (mQuestions.get(i).getType().equals("多选题")) {
                     if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                        score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
                     }else {
                         if (SimilarityUtils.Index_BF(mQuestions.get(i).getAnswer(),answers.get(i).getAnswer())!=-1){
-                            score2 = score2 + (Integer.parseInt(mQuestions.get(i).getScore())/2);
+                            score1 = score1 + (Integer.parseInt(mQuestions.get(i).getScore())/2);
                         }
                     }
                 }else if (mQuestions.get(i).getType().equals("单选题")){
                     if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
                     }
                 }else if(mQuestions.get(i).getType().equals("判断题")){
                     if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score4 = score4 + Integer.parseInt(mQuestions.get(i).getScore());
+                        score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
                     }
                 }
             }
         }
-        scoreUser[0] = score2;
-        scoreUser[1] = score3;
-        scoreUser[2] = score4;
-        return scoreUser;
+        mSp.writesScore(score,score1,score2,score3);
     }
 
 
+    //获取题目的分数
+    public void getScoreFromAnswer(){
+        float score=0;//主观题分数
+        float score1=0;//多选题分数
+        float score2=0;//单选题分数
+        float score3=0;//判断题分数
+        for (int i=0;i<mQuestions.size();i++){
+            if (mQuestions.get(i).getType().equals("主观题")){
+                score = score + Integer.parseInt(mQuestions.get(i).getScore());
+            }else{
+                if (mQuestions.get(i).getType().equals("多选题")) {
+                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                }else if (mQuestions.get(i).getType().equals("单选题")){
+                    score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                }else if(mQuestions.get(i).getType().equals("判断题")){
+                    score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+                }
+            }
+        }
+        mSp.setScore(score,score1,score2,score3);
+    }
 }
 
 

@@ -204,7 +204,7 @@ public class BarChartManager {
         // (0.2 + 0.02) * 4 + 0.08 = 1.00 -> interval per "group"
         xAxis.setLabelCount(xAxisValues.size() - 1, false);
         data.setBarWidth(barWidth);
-        final String[] xValues = {"单选题", "判断题", "多选题"};
+        final String[] xValues = {"多选题", "单选题", "判断题"};
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {

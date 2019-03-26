@@ -1,8 +1,10 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -24,6 +26,7 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.JsonUtil;
+import com.example.yaoyifei.yaoyfapplication.tools.SP;
 
 public class SetQuestionFragment extends Fragment implements View.OnClickListener {
 
@@ -40,6 +43,16 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
     private String Type = "";
     public int totaltime = 0;
     public int totalscore = 0;
+    private Context mContext;
+    private SP mSp;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getContext();
+        mSp = new SP(mContext);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +89,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         view.findViewById(R.id.addQuestion).setOnClickListener(this);
         view.findViewById(R.id.getQuestion).setOnClickListener(this);
 
-        title = (EditText) getView().findViewById(R.id.title);
+        title = (EditText) view.findViewById(R.id.title);
         a = (EditText) view.findViewById(R.id.A);
         b = (EditText) view.findViewById(R.id.B);
         c = (EditText) view.findViewById(R.id.C);
@@ -158,6 +171,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+
                         Toast.makeText(getActivity(), "恭喜!测试已经生成！", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -192,7 +206,8 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
             Toast.makeText(getActivity(), "请输入该题分值", Toast.LENGTH_SHORT).show();
         }else{
             totaltime = totaltime + Integer.parseInt(time.getText().toString());
-            totalscore = totalscore+Integer.parseInt(score.getText().toString());
+            totalscore = totalscore + Integer.parseInt(score.getText().toString());
+            mSp.write(totaltime,totalscore);
             final String address = "http://47.102.199.28/flyapp/addQuestionfromclient";
             Question question = new Question();
             question.setTitle(Title);

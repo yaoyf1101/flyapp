@@ -37,8 +37,70 @@ public class SP {
         data.put("isRemember",sp.getBoolean("isRemember",false));
         data.put("isAutoLogin",sp.getBoolean("isAutoLogin",false));
         return data;
-
     }
+
+    //保存教师出题的时间和分数
+    public void write(int score,int time){
+        SharedPreferences sp = mContext.getSharedPreferences("mysp1", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("time",time);
+        editor.putInt("score",score);
+        editor.commit();
+    }
+
+    //读取教师出题的时间和分数
+    public Map<String, Object> load() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        SharedPreferences sp = mContext.getSharedPreferences("mysp1", Context.MODE_PRIVATE);
+        data.put("time", sp.getInt("time", 0));
+        data.put("score", sp.getInt("score", 0));
+        return data;
+    }
+
+    //保存学生的实际成绩
+    public void writesScore(float score,float score1,float score2,float score3){
+        SharedPreferences sp = mContext.getSharedPreferences("mysp2", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putFloat("score",score);
+        editor.putFloat("score1",score1);
+        editor.putFloat("score2",score2);
+        editor.putFloat("score3",score3);
+        editor.commit();
+    }
+
+    //读取学生的实际成绩
+    public Map<String, Object> loadScore() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        SharedPreferences sp = mContext.getSharedPreferences("mysp2", Context.MODE_PRIVATE);
+        data.put("score", sp.getFloat("score", 0));
+        data.put("score1", sp.getFloat("score1", 0));
+        data.put("score2", sp.getFloat("score2", 0));
+        data.put("score3", sp.getFloat("score3", 0));
+        return data;
+    }
+
+    //保存题目分数
+    public void setScore(float score,float score1,float score2,float score3){
+        SharedPreferences sp = mContext.getSharedPreferences("mysp3", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putFloat("score",score);
+        editor.putFloat("score1",score1);
+        editor.putFloat("score2",score2);
+        editor.putFloat("score3",score3);
+        editor.commit();
+    }
+
+    //读取题目分数
+    public Map<String, Object> getScore() {
+        Map<String, Object> data = new HashMap<String, Object>();
+        SharedPreferences sp = mContext.getSharedPreferences("mysp3", Context.MODE_PRIVATE);
+        data.put("score", sp.getFloat("score", 0));
+        data.put("score1", sp.getFloat("score1", 0));
+        data.put("score2", sp.getFloat("score2", 0));
+        data.put("score3", sp.getFloat("score3", 0));
+        return data;
+    }
+
 
     public void clear(){
         SharedPreferences sp = mContext.getSharedPreferences("mysp", Context.MODE_PRIVATE);

@@ -37,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
     private List<LinearLayout> mLinearLayouts;
     private List<ImageView> mImageViews;
     private List<Fragment> mFragments;
@@ -45,9 +45,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView mNavigationView;
     private TextView mShowName;
     private String username;//从登录界面传过来的用户名字
-    private int time=0;//从教师主界面传过来的考试时间 atoa
-    private int[] scores = new int[3];//从教师界面传过来的客观题题目满分分数到统计界面 atoa
-    private  int[] scoreUser = new int[3];//考生考试结束得到的分数.将会传给统计界面 ftof
+    public static int time=0;//从教师主界面传过来的考试时间 atoa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +56,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = getIntent();
         username = intent.getStringExtra("name");
         initView();
+    }
+
+    public static ViewPager getmViewPager(){
+        return mViewPager;
     }
 
 
@@ -93,7 +95,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // init view pager
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(mAdapter);
-
         // register listener
         mViewPager.addOnPageChangeListener(mPageChangeListener);
         mLinearLayouts = new ArrayList<>(4);
