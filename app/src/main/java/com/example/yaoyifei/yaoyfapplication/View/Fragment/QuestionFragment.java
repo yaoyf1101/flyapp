@@ -510,6 +510,10 @@ public class QuestionFragment extends Fragment  {
             public void onFinish() {
                 countdowntimer.setText("考试结束");
                 isEnd=true;
+                CheckAnswerToScore();
+                ChartFragment.showBarChartMore();
+                ViewPager vp = HomeActivity.getmViewPager();
+                vp.setCurrentItem(2);
             }
         }.start();
     }
@@ -555,25 +559,27 @@ public class QuestionFragment extends Fragment  {
 
 
     //获取题目的分数
-    public void getScoreFromAnswer(){
-        float score=0;//主观题分数
-        float score1=0;//多选题分数
-        float score2=0;//单选题分数
-        float score3=0;//判断题分数
-        for (int i=0;i<mQuestions.size();i++){
-            if (mQuestions.get(i).getType().equals("主观题")){
-                score = score + Integer.parseInt(mQuestions.get(i).getScore());
-            }else{
-                if (mQuestions.get(i).getType().equals("多选题")) {
-                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
-                }else if (mQuestions.get(i).getType().equals("单选题")){
-                    score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
-                }else if(mQuestions.get(i).getType().equals("判断题")){
-                    score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+    public void getScoreFromAnswer() {
+        float score = 0;//主观题分数
+        float score1 = 0;//多选题分数
+        float score2 = 0;//单选题分数
+        float score3 = 0;//判断题分数
+        if (mQuestions != null) {
+            for (int i = 0; i < mQuestions.size(); i++) {
+                if (mQuestions.get(i).getType().equals("主观题")) {
+                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
+                } else {
+                    if (mQuestions.get(i).getType().equals("多选题")) {
+                        score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                    } else if (mQuestions.get(i).getType().equals("单选题")) {
+                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                    } else if (mQuestions.get(i).getType().equals("判断题")) {
+                        score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+                    }
                 }
             }
+            mSp.setScore(score, score1, score2, score3);
         }
-        mSp.setScore(score,score1,score2,score3);
     }
 }
 
