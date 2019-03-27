@@ -35,7 +35,7 @@
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/Bar_chat"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="280dp"
                 android:layout_margin="10dp"/>
 
         <LinearLayout
@@ -58,9 +58,15 @@
                 android:layout_marginLeft="11dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="主观题成绩统计图"
+                android:text="主观题云图"
                 android:textColor="#222222"
                 android:textSize="14sp" />
         </LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_margin="10dp"
+            android:id="@+id/image"
+            android:background="@color/colorAccent"/>
         </LinearLayout>
 </ScrollView>

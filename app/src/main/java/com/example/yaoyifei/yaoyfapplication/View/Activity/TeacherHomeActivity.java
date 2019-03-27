@@ -61,6 +61,7 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
     private void initView() {
         // find view
         mViewPager = findViewById(R.id.fragment_vp);
+        mViewPager.setOffscreenPageLimit(0);
         mDrwerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
         LayoutInflater factorys = LayoutInflater.from(TeacherHomeActivity.this);

@@ -138,7 +138,7 @@ public class QuestionFragmentTeacher extends Fragment  {
 
     //题目界面
     public void initAllView(){
-        if (mQuestions != null) {
+        if (mQuestions != null && mQuestions.size()>0) {
             count = mQuestions.size();//题目数量
             answers = new ArrayList<>(count);
             save.setVisibility(View.GONE);
@@ -186,6 +186,9 @@ public class QuestionFragmentTeacher extends Fragment  {
                     }
                 }
             });
+        }else{
+            Toast.makeText(getActivity(), "题库为空,请添加题目后再次刷新", Toast.LENGTH_SHORT).show();
+            getQuestion();
         }
     }
 

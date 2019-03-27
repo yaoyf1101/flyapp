@@ -40,7 +40,7 @@ public class SP {
     }
 
     //保存教师出题的时间和分数
-    public void write(int score,int time){
+    public void write(int time,int score){
         SharedPreferences sp = mContext.getSharedPreferences("mysp1", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("time",time);

@@ -171,7 +171,6 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-
                         Toast.makeText(getActivity(), "恭喜!测试已经生成！", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -194,13 +193,13 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         String Score = score.getText().toString();
         if (TextUtils.isEmpty(Title)) {
             Toast.makeText(getActivity(), "请输入题目名称", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(Answer)){
+        }else if (TextUtils.isEmpty(Answer)){
             Toast.makeText(getActivity(), "请输入正确答案", Toast.LENGTH_SHORT).show();
         }else  if (TextUtils.isEmpty(Analysis)){
             Toast.makeText(getActivity(), "请输入答案解析", Toast.LENGTH_SHORT).show();
         }else if (Type.equals("")) {
             Toast.makeText(getActivity(), "请选择题目类型", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(time.getText().toString())) {
+        }else if (TextUtils.isEmpty(time.getText().toString())) {
             Toast.makeText(getActivity(), "请输入该题所需时长", Toast.LENGTH_SHORT).show();
         }else if (TextUtils.isEmpty(Score)) {
             Toast.makeText(getActivity(), "请输入该题分值", Toast.LENGTH_SHORT).show();

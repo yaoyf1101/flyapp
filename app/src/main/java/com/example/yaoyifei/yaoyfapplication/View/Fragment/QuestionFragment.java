@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -92,7 +93,9 @@ public class QuestionFragment extends Fragment  {
             }
             @Override
             public void onError(Exception e) {
-
+                Looper.prepare();
+                Toast.makeText(getActivity(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
         });
     }
@@ -302,7 +305,7 @@ public class QuestionFragment extends Fragment  {
                     dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                           // Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
                             isEnd=true;
                             next.setEnabled(true);
                             CheckAnswerToScore();
@@ -485,9 +488,9 @@ public class QuestionFragment extends Fragment  {
             return;
         }
         if (answers.size()<count ){
-            answers.add(index,userAnswer);
+            answers.add(userAnswer);
         }else {
-            return;
+            answers.set(index,userAnswer);
         }
 
     }
