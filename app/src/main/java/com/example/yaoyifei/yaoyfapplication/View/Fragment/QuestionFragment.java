@@ -27,6 +27,7 @@ import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Activity.HomeActivity;
+import com.example.yaoyifei.yaoyfapplication.tools.FileUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.SP;
@@ -72,14 +73,17 @@ public class QuestionFragment extends Fragment  {
 
     private Context mContext;
     private SP mSp;
+    private FileUtil fileUtil;
     private Boolean isBegin = false;
     private Boolean isEnd = false;
+    private Boolean isSave = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
         mSp = new SP(mContext);
+        fileUtil = new FileUtil(mContext);
         getQuestion();
     }
 
@@ -155,75 +159,10 @@ public class QuestionFragment extends Fragment  {
         countdowntimer = view.findViewById(R.id.CountDownTimer);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        initView();
-        getScoreFromAnswer();
-    }
-
-    //题目界面
-    public void initAllView(){
-        if (mQuestions != null) {
-            count = mQuestions.size();//题目数量
-            answers = new ArrayList<>(count);
-            save.setVisibility(View.GONE);
-            starttest.setVisibility(View.GONE);
-            //初始化题库中的第一道题
-            index = 0;
-            Question question = mQuestions.get(index);
-            type = getQuestionType(question);
-            setAllViewFromType(type, question);
-            swipeRefreshLayout.setEnabled(false);
-            //切换题目的逻辑实现
-            //下一题
-            next.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (index < count-1) {
-                        next.setEnabled(true);
-                        previous.setEnabled(true);
-                        index++;
-                        Question qs = mQuestions.get(index);
-                        type = getQuestionType(qs);
-                        setAllViewFromType(type,qs);
-                    } else {
-                        next.setEnabled(false);
-                        previous.setEnabled(true);
-                        Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            //上一题
-            previous.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (index > 0){
-                        previous.setEnabled(true);
-                        next.setEnabled(true);
-                        index--;
-                        Question qs = mQuestions.get(index);
-                        type = getQuestionType(qs);
-                        setAllViewFromType(type,qs);
-                    }else {
-                        previous.setEnabled(false);
-                        next.setEnabled(true);
-                        Toast.makeText(getActivity(), "已经是第一题了", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-    }
-
     public void initView(){
-        if (mQuestions != null) {
+        if (mQuestions != null && mQuestions.size()>0) {
             count = mQuestions.size();//题目数量
             answers = new ArrayList<>(count);
-            //当题库中没有题的时候
-            if (count == 0) {
-                Toast.makeText(getActivity(), "当前题库没有题目,请刷新题库！", Toast.LENGTH_SHORT).show();
-                return;
-            }
             //初始化题库中的第一道题
             index = 0;
             Question question = mQuestions.get(index);
@@ -307,9 +246,12 @@ public class QuestionFragment extends Fragment  {
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
                             isEnd=true;
+                            isSave=true;
                             next.setEnabled(true);
+                            getScoreFromAnswer();
                             CheckAnswerToScore();
                             ChartFragment.showBarChartMore();
+                            ChartFragment.showYunTu();
                             ViewPager vp = HomeActivity.getmViewPager();
                             vp.setCurrentItem(2);
                         }
@@ -318,6 +260,9 @@ public class QuestionFragment extends Fragment  {
                     dialog.show();
                 }
             });
+        }else{
+            Toast.makeText(getActivity(), "题库为空,请添加题目后再次刷新", Toast.LENGTH_SHORT).show();
+            getQuestion();
         }
     }
 
@@ -331,6 +276,7 @@ public class QuestionFragment extends Fragment  {
         }
         return result;
     }
+
     //获取题目类型
     public int getQuestionType(Question question){
         if (question.getType().equals("单选题")){
@@ -390,66 +336,6 @@ public class QuestionFragment extends Fragment  {
         }
     }
 
-    //根据不同的题目类型设置不同的界面
-    public void setAllViewFromType(int type,Question question){
-        switch (type) {
-            case 1:
-                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
-                torF.setVisibility(View.GONE);
-                checkbox.setVisibility(View.GONE);
-                editText.setVisibility(View.GONE);
-                radio.setVisibility(View.VISIBLE);
-                a.setText(question.getA());
-                b.setText(question.getB());
-                c.setText(question.getC());
-                d.setText(question.getD());
-                answer_area.setVisibility(View.VISIBLE);
-                answer.setText(question.getAnswer());
-                analysis_area.setVisibility(View.VISIBLE);
-                analysis.setText(question.getAnalysis());
-                break;
-            case 2:
-                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
-                torF.setVisibility(View.VISIBLE);
-                radio.setVisibility(View.GONE);
-                checkbox.setVisibility(View.GONE);
-                editText.setVisibility(View.GONE);
-                answer_area.setVisibility(View.VISIBLE);
-                answer.setText(question.getAnswer());
-                analysis_area.setVisibility(View.VISIBLE);
-                analysis.setText(question.getAnalysis());
-                break;
-            case 3:
-                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
-                editText.setVisibility(View.VISIBLE);
-                torF.setVisibility(View.GONE);
-                radio.setVisibility(View.GONE);
-                checkbox.setVisibility(View.GONE);
-                answer_area.setVisibility(View.VISIBLE);
-                answer.setText(question.getAnswer());
-                analysis_area.setVisibility(View.VISIBLE);
-                analysis.setText(question.getAnalysis());
-                break;
-            case 4:
-                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
-                torF.setVisibility(View.GONE);
-                radio.setVisibility(View.GONE);
-                editText.setVisibility(View.GONE);
-                checkbox.setVisibility(View.VISIBLE);
-                answer_area.setVisibility(View.VISIBLE);
-                answer.setText(question.getAnswer());
-                analysis_area.setVisibility(View.VISIBLE);
-                analysis.setText(question.getAnalysis());
-                aa.setText(question.getA());
-                bb.setText(question.getB());
-                cc.setText(question.getC());
-                dd.setText(question.getD());
-                break;
-            case 0:
-                break;
-        }
-    }
-
     //通过类型获取题目答案
     public void getYouAnswerFromType(final int index, int type){
         final UserAnswer userAnswer = new UserAnswer();
@@ -494,12 +380,14 @@ public class QuestionFragment extends Fragment  {
         }
 
     }
+
     //格式化时间
     public static String formatDuring(long mss) {
         long minutes = (mss % (1000 * 60 * 60)) / (1000 * 60);
         long seconds = (mss % (1000 * 60)) / 1000 ;
         return  "距离考试结束还有：" + minutes + " 分钟 " + seconds + " 秒 ";
     }
+
     //设置定时任务
     public void setTimer(int minutes){
         countdowntimer.setVisibility(View.VISIBLE);
@@ -512,14 +400,19 @@ public class QuestionFragment extends Fragment  {
             @Override
             public void onFinish() {
                 countdowntimer.setText("考试结束");
-                isEnd=true;
-                CheckAnswerToScore();
-                ChartFragment.showBarChartMore();
-                ViewPager vp = HomeActivity.getmViewPager();
-                vp.setCurrentItem(2);
+                isEnd = true;
+                if (!isSave) {
+                    getScoreFromAnswer();
+                    CheckAnswerToScore();
+                    ChartFragment.showBarChartMore();
+                    ChartFragment.showYunTu();
+                    ViewPager vp = HomeActivity.getmViewPager();
+                    vp.setCurrentItem(2);
+                }
             }
         }.start();
     }
+
     //核对答案给出分数
     public void CheckAnswerToScore(){
         float score=0;//主观题分数
@@ -528,6 +421,7 @@ public class QuestionFragment extends Fragment  {
         float score3=0;//判断题分数
         for (int i=0;i<mQuestions.size();i++){
             if (mQuestions.get(i).getType().equals("主观题")){
+                fileUtil.save(answers.get(i).getAnswer());//保存主观题答案到文件中
                 if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
                     score = score + Integer.parseInt(mQuestions.get(i).getScore());
                 }else if (SimilarityUtils.Index_BF(answers.get(i).getAnswer(),mQuestions.get(i).getAnswer())>=0){
@@ -561,29 +455,28 @@ public class QuestionFragment extends Fragment  {
     }
 
 
-    //获取题目的分数
+    // 获取题目的分数
     public void getScoreFromAnswer() {
-        float score = 0;//主观题分数
-        float score1 = 0;//多选题分数
-        float score2 = 0;//单选题分数
-        float score3 = 0;//判断题分数
+        float score = 0; // 主观题分数
+        float score1 = 0;// 多选题分数
+        float score2 = 0;// 单选题分数
+        float score3 = 0;// 判断题分数
         if (mQuestions != null) {
             for (int i = 0; i < mQuestions.size(); i++) {
                 if (mQuestions.get(i).getType().equals("主观题")) {
                     score = score + Integer.parseInt(mQuestions.get(i).getScore());
-                } else {
-                    if (mQuestions.get(i).getType().equals("多选题")) {
-                        score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
-                    } else if (mQuestions.get(i).getType().equals("单选题")) {
-                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
-                    } else if (mQuestions.get(i).getType().equals("判断题")) {
-                        score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
-                    }
+                } else if (mQuestions.get(i).getType().equals("多选题")) {
+                    score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                } else if (mQuestions.get(i).getType().equals("单选题")) {
+                    score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                } else if (mQuestions.get(i).getType().equals("判断题")) {
+                    score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
                 }
             }
-            mSp.setScore(score, score1, score2, score3);
         }
+        mSp.setScore(score, score1, score2, score3);
     }
+
 }
 
 
