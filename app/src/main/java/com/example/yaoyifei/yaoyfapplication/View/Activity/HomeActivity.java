@@ -28,6 +28,7 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.ChartFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
+import com.example.yaoyifei.yaoyfapplication.tools.SP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +47,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mShowName;
     private String username;//从登录界面传过来的用户名字
     public static int time=0;//从教师主界面传过来的考试时间 atoa
+    private SP mSp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        mSp = new SP(this);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         username = intent.getStringExtra("name");
@@ -76,6 +79,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "名字为空", Toast.LENGTH_SHORT).show();
         }else{
             mShowName.setText(username);
+            mSp.write(username);
         }
 
         //init actionBar

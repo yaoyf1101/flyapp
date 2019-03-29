@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
+import com.example.yaoyifei.yaoyfapplication.Entity.UserGrade;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Activity.HomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.FileUtil;
@@ -37,6 +38,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QuestionFragment extends Fragment  {
     private Button previous,next,starttest,save;
@@ -68,6 +70,7 @@ public class QuestionFragment extends Fragment  {
     private int index;
     private int type;
     public List<UserAnswer> answers;
+    public UserGrade userGrade = new UserGrade();
     final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
 
     private Context mContext;
@@ -457,6 +460,13 @@ public class QuestionFragment extends Fragment  {
             }
             fileUtil.save(stringBuilder.toString());//保存主观题答案到文件中
             mSp.writesScore(score, score1, score2, score3);
+            Map<String,Object> data = mSp.load();
+            userGrade.setUsename(data.get("name").toString());
+            userGrade.setScore((int) score);
+            userGrade.setScore1((int) score1);
+            userGrade.setScore2((int) score2);
+            userGrade.setScore3((int) score3);
+            Toast.makeText(mContext, userGrade.toString(), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(mContext, "未检测到您输入答案", Toast.LENGTH_SHORT).show();
         }
