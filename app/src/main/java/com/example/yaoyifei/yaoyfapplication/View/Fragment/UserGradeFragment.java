@@ -15,7 +15,7 @@ import com.example.yaoyifei.yaoyfapplication.adapter.AdapterTest;
 import java.util.ArrayList;
 
 
-public class TestFragment extends Fragment  {
+public class UserGradeFragment extends Fragment  {
     private ArrayList<String> mData;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLlm;
@@ -32,7 +32,7 @@ public class TestFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_test, null);
+        return inflater.inflate(R.layout.fragment_grade, null);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TestFragment extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = view.findViewById(R.id.recyclerview);
         mRecyclerView.setAdapter(new AdapterTest(getActivity(),mData));
-        mLlm = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL, false);
+        mLlm = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(mLlm);
     }
 }

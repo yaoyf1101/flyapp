@@ -1,7 +1,6 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,8 +19,6 @@ import android.widget.Toast;
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
-import com.example.yaoyifei.yaoyfapplication.View.Activity.LoginActivity;
-import com.example.yaoyifei.yaoyfapplication.View.Activity.TeacherHomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.google.gson.Gson;

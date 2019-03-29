@@ -473,7 +473,8 @@ public class QuestionFragment extends Fragment  {
             Toast.makeText(mContext, "未检测到您输入答案", Toast.LENGTH_SHORT).show();
         }
     }
-    //提交成绩
+
+    //提交成绩信息
     public void commitGrade(UserGrade userGrade){
         final String address = "http://47.102.199.28/flyapp/addUserGradeFromClient";
         final String json = JsonUtil.converJavaBeanToJson(userGrade);

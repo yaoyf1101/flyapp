@@ -28,6 +28,7 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.ChartFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.UserGradeFragment;
 import com.example.yaoyifei.yaoyfapplication.tools.SP;
 
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mFragments.add(new BlankFragment());//指导学生操作的界面
         mFragments.add(new QuestionFragment());//考试以及查看做题情况的界面
         mFragments.add(new ChartFragment());//做题情况界面
-        mFragments.add(new Fragment());//个人和同学的成绩界面
+        mFragments.add(new UserGradeFragment());//个人和同学的成绩界面
 
         // init view pager
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);

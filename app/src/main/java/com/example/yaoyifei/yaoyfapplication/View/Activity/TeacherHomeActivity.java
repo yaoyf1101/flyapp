@@ -28,6 +28,7 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragmentTeacher;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.SetQuestionFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.UserGradeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +86,7 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
         mFragments.add(new BlankFragment());//主页是用来指导老师操作用的
         mFragments.add(new SetQuestionFragment());//老师用来编辑题目的页面
         mFragments.add(new QuestionFragmentTeacher());//题目预览界面
-        mFragments.add(new Fragment());//学生做题情况界面
+        mFragments.add(new UserGradeFragment());//学生做题情况界面
         // init view pager
 
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);

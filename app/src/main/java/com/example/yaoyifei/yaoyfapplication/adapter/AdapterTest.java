@@ -12,11 +12,11 @@ import com.example.yaoyifei.yaoyfapplication.R;
 import java.util.ArrayList;
 
 public class AdapterTest extends RecyclerView.Adapter<ViewHolderTest> {
-    private Context mCtx;
+    private Context mContext;
     private ArrayList<String> data;
 
     public AdapterTest(Context ctx, ArrayList<String> data) {
-        mCtx = ctx;
+        mContext = ctx;
         this.data = data;
     }
 
@@ -30,7 +30,7 @@ public class AdapterTest extends RecyclerView.Adapter<ViewHolderTest> {
     @Override
     public ViewHolderTest onCreateViewHolder(ViewGroup parent, int viewType) {
         //加载布局文件
-        View itemView = LayoutInflater.from(mCtx).inflate(R.layout.item_test, parent,false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_usergrade, null,false);
         return new ViewHolderTest(itemView);
     }
 
