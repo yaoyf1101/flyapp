@@ -37,7 +37,7 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
 
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
     private List<LinearLayout> mLinearLayouts;
     private List<ImageView> mImageViews;
     private List<Fragment> mFragments;
@@ -125,6 +125,10 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
                 return true;
             }
         });
+    }
+
+    public static ViewPager getmViewPager(){
+        return mViewPager;
     }
 
     @Override

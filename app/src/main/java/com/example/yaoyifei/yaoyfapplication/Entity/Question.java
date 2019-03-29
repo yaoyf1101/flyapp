@@ -25,8 +25,8 @@ public class Question implements Serializable {
     private String c;
     private String answer;//正确答案
     private String d;
-    private String t;
-    private String f;
+    private String t;//重构T选项为本题用时
+    private String f;//可扩展选项
     private int id;//题目id
     private String analysis;//答案解析
     private String title;// 题目描述

@@ -64,7 +64,8 @@ public class FileUtil {
         return stringBuilder.toString();
     }
 
-    public File getFile() {
-        return new File("/data/data/com.example.yaoyifei.yaoyfapplication/files/data");
+    public void deleteFile() {
+        File file =  new File("/data/data/com.example.yaoyifei.yaoyfapplication/files/data");
+        file.delete();
     }
 }

@@ -39,23 +39,21 @@ public class SP {
         return data;
     }
 
-    //保存教师出题的时间和分数
+/*    //保存教师出题的时间
     public void write(int time,int score){
         SharedPreferences sp = mContext.getSharedPreferences("mysp1", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("time",time);
-        editor.putInt("score",score);
         editor.commit();
     }
 
-    //读取教师出题的时间和分数
+    //读取教师出题的时间
     public Map<String, Object> load() {
         Map<String, Object> data = new HashMap<String, Object>();
         SharedPreferences sp = mContext.getSharedPreferences("mysp1", Context.MODE_PRIVATE);
         data.put("time", sp.getInt("time", 0));
-        data.put("score", sp.getInt("score", 0));
         return data;
-    }
+    }*/
 
     //保存学生的实际成绩
     public void writesScore(float score,float score1,float score2,float score3){
@@ -107,5 +105,12 @@ public class SP {
         SharedPreferences.Editor editor = sp.edit();
         editor.clear();
         editor.commit();
+    }
+
+    public void clear2(){
+        SharedPreferences sp2 = mContext.getSharedPreferences("mysp2", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor2 = sp2.edit();
+        editor2.clear();
+        editor2.commit();
     }
 }

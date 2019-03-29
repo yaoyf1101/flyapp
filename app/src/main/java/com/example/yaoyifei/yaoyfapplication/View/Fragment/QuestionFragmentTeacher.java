@@ -1,6 +1,7 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.View.Activity.LoginActivity;
+import com.example.yaoyifei.yaoyfapplication.View.Activity.TeacherHomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.google.gson.Gson;
@@ -32,7 +35,6 @@ public class QuestionFragmentTeacher extends Fragment  {
     private TextView title;
     private TextView answer;
     private TextView analysis;
-    private TextView countdowntimer;
     private LinearLayout torF;
     private LinearLayout radio;
     private LinearLayout answer_area;
@@ -61,7 +63,6 @@ public class QuestionFragmentTeacher extends Fragment  {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getQuestion();
     }
 
     //通过网络获取题目
@@ -93,6 +94,7 @@ public class QuestionFragmentTeacher extends Fragment  {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                getQuestion();
                 initAllView();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -130,9 +132,6 @@ public class QuestionFragmentTeacher extends Fragment  {
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
         save = view.findViewById(R.id.save_answer);
-       // tips = view.findViewById(R.id.tips);
-        //倒计时
-        countdowntimer = view.findViewById(R.id.CountDownTimer);
     }
 
 
@@ -148,7 +147,6 @@ public class QuestionFragmentTeacher extends Fragment  {
             Question question = mQuestions.get(index);
             type = getQuestionType(question);
             setAllViewFromType(type, question);
-            swipeRefreshLayout.setEnabled(false);
             //切换题目的逻辑实现
             //下一题
             next.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +185,7 @@ public class QuestionFragmentTeacher extends Fragment  {
                 }
             });
         }else{
-            Toast.makeText(getActivity(), "题库为空,请添加题目后再次刷新", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "题库为空,请再次刷新", Toast.LENGTH_SHORT).show();
             getQuestion();
         }
     }

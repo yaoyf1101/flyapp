@@ -37,7 +37,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class QuestionFragment extends Fragment  {
     private Button previous,next,starttest,save;
@@ -51,7 +50,7 @@ public class QuestionFragment extends Fragment  {
     private LinearLayout analysis_area;
     private LinearLayout checkbox;
     private LinearLayout switch_area;
-    private RadioGroup radioGroup;
+    private RadioGroup radioGroup,radioGroupTF;
     private RadioButton t;
     private RadioButton f;
     private RadioButton a;
@@ -126,6 +125,7 @@ public class QuestionFragment extends Fragment  {
         title = (TextView) view.findViewById(R.id.title);
         //判断题区域
         torF = (LinearLayout) view.findViewById(R.id.TorF);
+        radioGroupTF = view.findViewById(R.id.radio_group_tf);
         t = view.findViewById(R.id.T);
         f = view.findViewById(R.id.F);
         //单选题区域
@@ -181,6 +181,7 @@ public class QuestionFragment extends Fragment  {
                             Question question = mQuestions.get(index);
                             type = getQuestionType(question);
                             getYouAnswerFromType(index, type);
+                            clearSelect();
                             index++;
                             Question qs = mQuestions.get(index);
                             type = getQuestionType(qs);
@@ -207,6 +208,7 @@ public class QuestionFragment extends Fragment  {
                         if (index > 0) {
                             previous.setEnabled(true);
                             next.setEnabled(true);
+                            clearSelect();
                             index--;
                             Question qs = mQuestions.get(index);
                             type = getQuestionType(qs);
@@ -229,8 +231,7 @@ public class QuestionFragment extends Fragment  {
                     //具体的数值由教师端提供
                     isBegin=true;
                     starttest.setEnabled(false);
-                    Map<String, Object> data = mSp.load();
-                    int time = (Integer) data.get("time");
+                    int time = getTime();
                     setTimer(time);
                 }
             });
@@ -244,10 +245,11 @@ public class QuestionFragment extends Fragment  {
                     dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getActivity(), showAnswers(), Toast.LENGTH_SHORT).show();
                             isEnd=true;
                             isSave=true;
                             next.setEnabled(true);
+                            save.setEnabled(false);
                             getScoreFromAnswer();
                             CheckAnswerToScore();
                             ChartFragment.showBarChartMore();
@@ -419,39 +421,45 @@ public class QuestionFragment extends Fragment  {
         float score1=0;//多选题分数
         float score2=0;//单选题分数
         float score3=0;//判断题分数
-        for (int i=0;i<mQuestions.size();i++){
-            if (mQuestions.get(i).getType().equals("主观题")){
-                fileUtil.save(answers.get(i).getAnswer());//保存主观题答案到文件中
-                if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
-                }else if (SimilarityUtils.Index_BF(answers.get(i).getAnswer(),mQuestions.get(i).getAnswer())>=0){
-                    score = score + Integer.parseInt(mQuestions.get(i).getScore());
-                }else if (SimilarityUtils.levenshtein(mQuestions.get(i).getAnswer().toLowerCase(),answers.get(i).getAnswer().toLowerCase())>0.5){
-                    score = score + Integer.parseInt(mQuestions.get(i).getScore())/2;
-                }else {
-                    score = score + 0;
-                }
-            }else{
-                if (mQuestions.get(i).getType().equals("多选题")) {
-                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
-                    }else {
-                        if (SimilarityUtils.Index_BF(mQuestions.get(i).getAnswer(),answers.get(i).getAnswer())!=-1){
-                            score1 = score1 + (Integer.parseInt(mQuestions.get(i).getScore())/2);
+        StringBuilder stringBuilder = new StringBuilder();
+        if (answers.size()>0&&!answers.isEmpty()) {
+            for (int i = 0; i < mQuestions.size(); i++) {
+                if (mQuestions.get(i).getType().equals("主观题")) {
+                    stringBuilder.append(answers.get(i).getAnswer());
+                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                        score = score + Integer.parseInt(mQuestions.get(i).getScore());
+                    } else if (SimilarityUtils.Index_BF(answers.get(i).getAnswer(), mQuestions.get(i).getAnswer()) >= 0) {
+                        score = score + Integer.parseInt(mQuestions.get(i).getScore());
+                    } else if (SimilarityUtils.levenshtein(mQuestions.get(i).getAnswer().toLowerCase(), answers.get(i).getAnswer().toLowerCase()) > 0.5) {
+                        score = score + Integer.parseInt(mQuestions.get(i).getScore()) / 2;
+                    } else {
+                        score = score + 0;
+                    }
+                } else {
+                    if (mQuestions.get(i).getType().equals("多选题")) {
+                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                            score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
+                        } else {
+                            if (SimilarityUtils.Index_BF(mQuestions.get(i).getAnswer(), answers.get(i).getAnswer()) != -1) {
+                                score1 = score1 + (Integer.parseInt(mQuestions.get(i).getScore()) / 2);
+                            }
                         }
-                    }
-                }else if (mQuestions.get(i).getType().equals("单选题")){
-                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
-                    }
-                }else if(mQuestions.get(i).getType().equals("判断题")){
-                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())){
-                        score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+                    } else if (mQuestions.get(i).getType().equals("单选题")) {
+                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                            score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
+                        }
+                    } else if (mQuestions.get(i).getType().equals("判断题")) {
+                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                            score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
+                        }
                     }
                 }
             }
+            fileUtil.save(stringBuilder.toString());//保存主观题答案到文件中
+            mSp.writesScore(score, score1, score2, score3);
+        }else{
+            Toast.makeText(mContext, "未检测到您输入答案", Toast.LENGTH_SHORT).show();
         }
-        mSp.writesScore(score,score1,score2,score3);
     }
 
 
@@ -477,6 +485,28 @@ public class QuestionFragment extends Fragment  {
         mSp.setScore(score, score1, score2, score3);
     }
 
+    //获取题目总用时
+    public int getTime(){
+        int time = 0;
+        if (mQuestions != null) {
+            for (int i = 0; i < mQuestions.size(); i++) {
+                String string = mQuestions.get(i).getT();
+                time = time + Integer.valueOf(string);
+            }
+        }
+        return time;
+    }
+
+    //清除选项
+    public void clearSelect(){
+        editText.setText("");
+        radioGroup.clearCheck();
+        radioGroupTF.clearCheck();
+        aa.setChecked(false);
+        bb.setChecked(false);
+        cc.setChecked(false);
+        dd.setChecked(false);
+    }
 }
 
 

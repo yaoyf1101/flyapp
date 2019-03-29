@@ -1,11 +1,11 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,10 +23,10 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
 import com.example.yaoyifei.yaoyfapplication.R;
+import com.example.yaoyifei.yaoyfapplication.View.Activity.TeacherHomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.JsonUtil;
-import com.example.yaoyifei.yaoyfapplication.tools.SP;
 
 public class SetQuestionFragment extends Fragment implements View.OnClickListener {
 
@@ -41,17 +41,11 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
     private Button btn_back,reload,generatetest;
     private LinearLayout function_area;
     private String Type = "";
-    public int totaltime = 0;
-    public int totalscore = 0;
-    private Context mContext;
-    private SP mSp;
-
+    private Boolean isSet = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getContext();
-        mSp = new SP(mContext);
     }
 
     @Override
@@ -110,7 +104,6 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         btn_back.setOnClickListener(this);
         reload.setOnClickListener(this);
         generatetest.setOnClickListener(this);
-        generatetest.setEnabled(false);
     }
 
     @Override
@@ -130,7 +123,6 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                     public void onClick(DialogInterface dialog, int which)
                     {
                         addQuestion();
-                        generatetest.setEnabled(true);
                     }
                 });
                 //    设置一个NegativeButton
@@ -158,26 +150,28 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                webView.reload();
                 break;
             case R.id.generate_test:
-                //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-                //    设置Title的内容
-                builder2.setTitle("是否要生成测试？");
-                //    设置Content来显示一个信息
-                builder2.setMessage("您当前添加到题库的题目"+"\r\n"+"总分为："+totalscore+"分"+"\r\n"
-                        +"总用时为："+totaltime+"分钟");
-                //    设置一个PositiveButton
-                builder2.setPositiveButton("生成", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        Toast.makeText(getActivity(), "恭喜!测试已经生成！", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                //    设置一个NegativeButton
-                builder2.setNegativeButton("取消", null);
-                //    显示出该对话框
-                builder2.show();
+                if (isSet) {
+                    //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
+                    AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                    //    设置Title的内容
+                    builder2.setTitle("测试已生成");
+                    //    设置Content来显示一个信息
+                    builder2.setMessage("是否跳转到预览界面预览题目");
+                    //    设置一个PositiveButton
+                    builder2.setPositiveButton("跳转", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ViewPager vp = TeacherHomeActivity.getmViewPager();
+                            vp.setCurrentItem(2);
+                        }
+                    });
+                    //    设置一个NegativeButton
+                    builder2.setNegativeButton("取消", null);
+                    //    显示出该对话框
+                    builder2.show();
+                }else{
+                    Toast.makeText(getActivity(), "您还未添加题目呢", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -191,6 +185,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         String Answer = answer.getText().toString();
         String Analysis = analysis.getText().toString();
         String Score = score.getText().toString();
+        String Time = time.getText().toString();
         if (TextUtils.isEmpty(Title)) {
             Toast.makeText(getActivity(), "请输入题目名称", Toast.LENGTH_SHORT).show();
         }else if (TextUtils.isEmpty(Answer)){
@@ -204,9 +199,6 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         }else if (TextUtils.isEmpty(Score)) {
             Toast.makeText(getActivity(), "请输入该题分值", Toast.LENGTH_SHORT).show();
         }else{
-            totaltime = totaltime + Integer.parseInt(time.getText().toString());
-            totalscore = totalscore + Integer.parseInt(score.getText().toString());
-            mSp.write(totaltime,totalscore);
             final String address = "http://47.102.199.28/flyapp/addQuestionfromclient";
             Question question = new Question();
             question.setTitle(Title);
@@ -214,6 +206,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
             question.setAnalysis(Analysis);
             question.setType(Type);
             question.setScore(Score);
+            question.setT(Time);//T选项重构为用时
             question.setA(A);
             question.setB(B);
             question.setC(C);
@@ -224,6 +217,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                 public void onFinish(String response) {
                     Looper.prepare();
                     Toast.makeText(getActivity(), "添加题目成功", Toast.LENGTH_SHORT).show();
+                    isSet = true;
                     Looper.loop();
                 }
 
@@ -237,9 +231,9 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
             //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             //    设置Title的内容
-            builder.setTitle("继续编辑下一题");
+            builder.setTitle("清除题目信息");
             //    设置Content来显示一个信息
-            builder.setMessage("是否继续编辑下一题");
+            builder.setMessage("是否清除题目信息,编辑下一题？");
             //    设置一个PositiveButton
             builder.setPositiveButton("是", new DialogInterface.OnClickListener()
             {

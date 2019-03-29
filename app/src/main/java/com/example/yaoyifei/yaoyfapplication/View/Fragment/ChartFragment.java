@@ -64,6 +64,7 @@ public class ChartFragment extends Fragment  {
     public static void showBarChartMore() {
         Map<String, Object> data = mSp.loadScore();
         Map<String, Object> data1 = mSp.getScore();
+        mSp.clear2();//每次获取sp文件中的数据后清除
         BarChartManager barChartManager = new BarChartManager(barChat);
         List<Float> xAxisValues = new ArrayList<>();
         List<List<Float>> yAxisValues = new ArrayList<>();
@@ -113,6 +114,7 @@ public class ChartFragment extends Fragment  {
     //显示云图
     public static void showYunTu() {
         String str = mFileUtil.load();
+        mFileUtil.deleteFile();//每次从文件中服务数据后清除数据
         Map<String, Integer> wordMap = new HashMap<>();
         org.ansj.domain.Result result =ToAnalysis.parse(str);
         List<Term> terms = result.getTerms();
@@ -130,7 +132,7 @@ public class ChartFragment extends Fragment  {
                 wordMap.put(word,count*100);
             }
         }
-        WordCloud wd = new WordCloud(wordMap, 300, 250,Color.parseColor("#F08080"),Color.WHITE);
+        WordCloud wd = new WordCloud(wordMap, 400, 250,Color.parseColor("#F08080"),Color.parseColor("#1AC0C0C0"));
         wd.setWordColorOpacityAuto(true);
         Bitmap generatedWordCloudBmp = wd.generate();
         imageView.setImageBitmap(generatedWordCloudBmp);
