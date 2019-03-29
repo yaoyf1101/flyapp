@@ -31,6 +31,7 @@ import com.example.yaoyifei.yaoyfapplication.View.Activity.HomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.FileUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
+import com.example.yaoyifei.yaoyfapplication.tools.JsonUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.SP;
 import com.example.yaoyifei.yaoyfapplication.tools.SimilarityUtils;
 import com.google.gson.Gson;
@@ -461,17 +462,37 @@ public class QuestionFragment extends Fragment  {
             fileUtil.save(stringBuilder.toString());//保存主观题答案到文件中
             mSp.writesScore(score, score1, score2, score3);
             Map<String,Object> data = mSp.load();
-            userGrade.setUsename(data.get("name").toString());
+            userGrade.setUsername(data.get("name").toString());
             userGrade.setScore((int) score);
             userGrade.setScore1((int) score1);
             userGrade.setScore2((int) score2);
             userGrade.setScore3((int) score3);
+            commitGrade(userGrade);
             Toast.makeText(mContext, userGrade.toString(), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(mContext, "未检测到您输入答案", Toast.LENGTH_SHORT).show();
         }
     }
+    //提交成绩
+    public void commitGrade(UserGrade userGrade){
+        final String address = "http://47.102.199.28/flyapp/addUserGradeFromClient";
+        final String json = JsonUtil.converJavaBeanToJson(userGrade);
+        HttpUtil.sendQuestion(address, json, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Looper.prepare();
+                Toast.makeText(getActivity(), "成绩提交成功", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
 
+            @Override
+            public void onError(Exception e) {
+                Looper.prepare();
+                Toast.makeText(getActivity(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        });
+    }
 
     // 获取题目的分数
     public void getScoreFromAnswer() {

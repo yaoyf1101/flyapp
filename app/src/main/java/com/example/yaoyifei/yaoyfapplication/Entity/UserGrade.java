@@ -1,18 +1,27 @@
 package com.example.yaoyifei.yaoyfapplication.Entity;
 
 public class UserGrade {
-    private String usename;
+    private int id;
+    private String username;
     private int score;
     private int score1;
     private int score2;
     private int score3;
 
-    public String getUsename() {
-        return usename;
+    public int getId() {
+        return id;
     }
 
-    public void setUsename(String usename) {
-        this.usename = usename;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String usename) {
+        this.username = usename;
     }
 
     public int getScore() {
@@ -50,7 +59,8 @@ public class UserGrade {
     @Override
     public String toString() {
         return "UserGrade{" +
-                "usename='" + usename + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", score=" + score +
                 ", score1=" + score1 +
                 ", score2=" + score2 +

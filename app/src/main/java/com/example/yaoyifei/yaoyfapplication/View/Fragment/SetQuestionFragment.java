@@ -199,7 +199,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         }else if (TextUtils.isEmpty(Score)) {
             Toast.makeText(getActivity(), "请输入该题分值", Toast.LENGTH_SHORT).show();
         }else{
-            final String address = "http://47.102.199.28/flyapp/addQuestionfromclient";
+            final String address = "http://47.102.199.28/flyapp/addQuestionFromClient";
             Question question = new Question();
             question.setTitle(Title);
             question.setAnswer(Answer);
