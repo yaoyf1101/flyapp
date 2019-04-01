@@ -12,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,10 +36,6 @@ public class QuestionFragmentTeacher extends Fragment  {
     private LinearLayout answer_area;
     private LinearLayout analysis_area;
     private LinearLayout checkbox;
-    private LinearLayout switch_area;
-    private RadioGroup radioGroup;
-    private RadioButton t;
-    private RadioButton f;
     private RadioButton a;
     private RadioButton b;
     private RadioButton c;
@@ -69,6 +64,13 @@ public class QuestionFragmentTeacher extends Fragment  {
             public void onFinish(String response) {
                 Gson gson = new Gson();
                 mQuestions = gson.fromJson(response,new TypeToken<List<Question>>(){}.getType());
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        initAllView();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
             }
             @Override
             public void onError(Exception e) {
@@ -92,19 +94,14 @@ public class QuestionFragmentTeacher extends Fragment  {
             @Override
             public void onRefresh() {
                 getQuestion();
-                initAllView();
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
-        //题目区域mQuestions.get(i).getAnswer()
+        //题目区域
         title = (TextView) view.findViewById(R.id.title);
         //判断题区域
         torF = (LinearLayout) view.findViewById(R.id.TorF);
-        t = view.findViewById(R.id.T);
-        f = view.findViewById(R.id.F);
         //单选题区域
         radio = (LinearLayout) view.findViewById(R.id.radio);
-        radioGroup = (RadioGroup) view.findViewById(R.id.radio_group);
         a = (RadioButton) view.findViewById(R.id.A);
         b = (RadioButton) view.findViewById(R.id.B);
         c = (RadioButton) view.findViewById(R.id.C);
@@ -124,7 +121,6 @@ public class QuestionFragmentTeacher extends Fragment  {
         analysis = (TextView) view.findViewById(R.id.analysis);
         answer = (TextView) view.findViewById(R.id.answer);
         //切换题目和提交
-        switch_area = (LinearLayout) view.findViewById(R.id.switch_area);
         next = (Button) view.findViewById(R.id.btn_next);
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
@@ -183,7 +179,7 @@ public class QuestionFragmentTeacher extends Fragment  {
             });
         }else{
             Toast.makeText(getActivity(), "题库为空,请再次刷新", Toast.LENGTH_SHORT).show();
-            getQuestion();
+          //  getQuestion();
         }
     }
 

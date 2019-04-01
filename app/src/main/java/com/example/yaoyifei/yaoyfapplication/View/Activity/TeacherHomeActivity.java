@@ -1,6 +1,8 @@
 package com.example.yaoyifei.yaoyfapplication.View.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,15 +28,17 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragmentTeacher;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragmentTeacher;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.SetQuestionFragment;
-import com.example.yaoyifei.yaoyfapplication.View.Fragment.UserGradeFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.UserGradeFragmentTeacher;
+import com.example.yaoyifei.yaoyfapplication.tools.SP;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class TeacherHomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener {
+public class TeacherHomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener,BlankFragmentTeacher.OnFragmentInteractionListener {
 
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
@@ -44,25 +48,33 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
     private List<Fragment> mFragments;
     private FragmentPagerAdapter mAdapter;
     private NavigationView mNavigationView;
-    private String username;
     private TextView mShowName;
-
+    private String username;//从登录界面传过来的用户名字
+    private SP mSp;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_home_teacher);
+        mContext = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
+        mSp = new SP(this);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         username = intent.getStringExtra("name");
         initView();
     }
 
+    public static ViewPager getmViewPager(){
+        return mViewPager;
+    }
+
+
     private void initView() {
         // find view
         mViewPager = findViewById(R.id.fragment_vp);
-        mViewPager.setOffscreenPageLimit(0);
+        mViewPager.setOffscreenPageLimit(3);
         mDrwerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.nav_view);
         LayoutInflater factorys = LayoutInflater.from(TeacherHomeActivity.this);
@@ -72,6 +84,7 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
             Toast.makeText(this, "名字为空", Toast.LENGTH_SHORT).show();
         }else{
             mShowName.setText(username);
+            mSp.write(username);
         }
 
         //init actionBar
@@ -83,15 +96,14 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
 
         // init fragment
         mFragments = new ArrayList<>(4);
-        mFragments.add(new BlankFragment());//主页是用来指导老师操作用的
-        mFragments.add(new SetQuestionFragment());//老师用来编辑题目的页面
+        mFragments.add(new BlankFragmentTeacher());//指导老师操作的界面
+        mFragments.add(new SetQuestionFragment());//出题界面
         mFragments.add(new QuestionFragmentTeacher());//题目预览界面
-        mFragments.add(new UserGradeFragment());//学生做题情况界面
-        // init view pager
+        mFragments.add(new UserGradeFragmentTeacher());//所有同学的成绩界面
 
+        // init view pager
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(mAdapter);
-
         // register listener
         mViewPager.addOnPageChangeListener(mPageChangeListener);
         mLinearLayouts = new ArrayList<>(4);
@@ -112,24 +124,34 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId()==R.id.navigation_exit){
-                    //退出登录
+                    //退出登录的开关
                     loginActivity.clearData();
                     Intent intent = new Intent(TeacherHomeActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
                     mDrwerLayout.closeDrawers();
-
                 }else {
-                    mDrwerLayout.closeDrawers();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                    dialog.setIcon(R.drawable.ic_home_black_24dp);
+                    dialog.setTitle("关于");
+                    dialog.setMessage(
+                            "作者:姚逸飞\n"+
+                                    "\n"+
+                                    "手机:13296542887\n" +
+                                    "\n"+
+                                    "邮箱:yaoyf1101@thundersoft.com\n" +
+                                    "\n"+
+                                    "小菊花--安卓在线课堂小测试APP\n" +
+                                    "\n"+
+                                    "版本号:v1.0.0\n"+
+                                    "\n"+
+                                    "有任何建议或者反馈可以随时联系作者，谢谢！");
+                    dialog.show();
                 }
                 return true;
             }
         });
-    }
-
-    public static ViewPager getmViewPager(){
-        return mViewPager;
     }
 
     @Override
@@ -146,31 +168,31 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
 
         @Override
         public void onPageSelected(int position) {
-        switch (position){
-            case 0:
-                mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home_dark);
-                mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi);
-                mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi);
-                mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode);
-                break;
-            case 1:
-                mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home);
-                mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi_dark);
-                mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi);
-                mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode);
-                break;
-            case 2:
-                mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home);
-                mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi);
-                mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi_dark);
-                mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode);
-                break;
-            case 3:
-                mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home);
-                mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi);
-                mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi);
-                mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode_dark);
-                break;
+            switch (position){
+                case 0:
+                    mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home_dark);
+                    mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi);
+                    mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi);
+                    mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode);
+                    break;
+                case 1:
+                    mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home);
+                    mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi_dark);
+                    mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi);
+                    mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode);
+                    break;
+                case 2:
+                    mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home);
+                    mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi);
+                    mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi_dark);
+                    mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode);
+                    break;
+                case 3:
+                    mImageViews.get(0).setBackgroundResource(R.drawable.vector_drawable_home);
+                    mImageViews.get(1).setBackgroundResource(R.drawable.vector_drawable_kaoshi);
+                    mImageViews.get(2).setBackgroundResource(R.drawable.vector_drawable_lianxi);
+                    mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode_dark);
+                    break;
             }
         }
 
@@ -213,7 +235,7 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
                 mImageViews.get(3).setBackgroundResource(R.drawable.vector_drawable_wode_dark);
                 mViewPager.setCurrentItem(3,true);
                 break;
-                default:
+            default:
         }
     }
 
@@ -251,12 +273,11 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.count){
-            Toast.makeText(TeacherHomeActivity.this,"统计功能正在努力实现中，敬请期待",Toast.LENGTH_SHORT).show();
+            mViewPager.setCurrentItem(3,true);
         }else{
             mDrwerLayout.openDrawer(Gravity.LEFT);
         }
         return true;
     }
-
 }
 

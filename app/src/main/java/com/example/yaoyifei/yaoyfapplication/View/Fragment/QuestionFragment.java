@@ -52,7 +52,6 @@ public class QuestionFragment extends Fragment  {
     private LinearLayout answer_area;
     private LinearLayout analysis_area;
     private LinearLayout checkbox;
-    private LinearLayout switch_area;
     private RadioGroup radioGroup,radioGroupTF;
     private RadioButton t;
     private RadioButton f;
@@ -79,7 +78,8 @@ public class QuestionFragment extends Fragment  {
     private FileUtil fileUtil;
     private Boolean isBegin = false;
     private Boolean isEnd = false;
-    private Boolean isSave = false;
+    public static Boolean isSave = false;
+    private Boolean isCommit = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +87,6 @@ public class QuestionFragment extends Fragment  {
         mContext = getContext();
         mSp = new SP(mContext);
         fileUtil = new FileUtil(mContext);
-        getQuestion();
     }
 
     //通过网络获取题目
@@ -97,6 +96,13 @@ public class QuestionFragment extends Fragment  {
             public void onFinish(String response) {
                 Gson gson = new Gson();
                 mQuestions = gson.fromJson(response,new TypeToken<List<Question>>(){}.getType());
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        initView();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
             }
             @Override
             public void onError(Exception e) {
@@ -121,8 +127,7 @@ public class QuestionFragment extends Fragment  {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initView();
-                swipeRefreshLayout.setRefreshing(false);
+                getQuestion();
             }
         });
         //题目区域mQuestions.get(i).getAnswer()
@@ -154,7 +159,6 @@ public class QuestionFragment extends Fragment  {
         analysis = (TextView) view.findViewById(R.id.analysis);
         answer = (TextView) view.findViewById(R.id.answer);
         //切换题目和提交
-        switch_area = (LinearLayout) view.findViewById(R.id.switch_area);
         next = (Button) view.findViewById(R.id.btn_next);
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
@@ -268,7 +272,6 @@ public class QuestionFragment extends Fragment  {
             });
         }else{
             Toast.makeText(getActivity(), "题库为空,请添加题目后再次刷新", Toast.LENGTH_SHORT).show();
-            getQuestion();
         }
     }
 
@@ -467,11 +470,26 @@ public class QuestionFragment extends Fragment  {
             userGrade.setScore1((int) score1);
             userGrade.setScore2((int) score2);
             userGrade.setScore3((int) score3);
-            commitGrade(userGrade);
+            if (!isCommit){
+                commitGrade(userGrade);
+            }else {
+                Toast.makeText(mContext, "已经查看过答案和解析就不能再提交了哦", Toast.LENGTH_SHORT).show();
+            }
             Toast.makeText(mContext, userGrade.toString(), Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(mContext, "未检测到您输入答案", Toast.LENGTH_SHORT).show();
+            Map<String,Object> data = mSp.load();
+            userGrade.setUsername(data.get("name").toString());
+            userGrade.setScore(0);
+            userGrade.setScore1(0);
+            userGrade.setScore2(0);
+            userGrade.setScore3(0);
+            if (!isCommit){
+                commitGrade(userGrade);
+            }else {
+                Toast.makeText(mContext, "已经查看过答案和解析就不能再提交了哦", Toast.LENGTH_SHORT).show();
+            }
         }
+        initAllView();
     }
 
     //提交成绩信息
@@ -538,6 +556,121 @@ public class QuestionFragment extends Fragment  {
         bb.setChecked(false);
         cc.setChecked(false);
         dd.setChecked(false);
+    }
+
+    //题目界面
+    public void initAllView(){
+        isCommit = true;
+        if (mQuestions != null && mQuestions.size()>0) {
+            count = mQuestions.size();//题目数量
+            answers = new ArrayList<>(count);
+            save.setVisibility(View.GONE);
+            starttest.setVisibility(View.GONE);
+            //初始化题库中的第一道题
+            index = 0;
+            Question question = mQuestions.get(index);
+            type = getQuestionType(question);
+            setAllViewFromType(type, question);
+            //切换题目的逻辑实现
+            //下一题
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (index < count-1) {
+                        next.setEnabled(true);
+                        previous.setEnabled(true);
+                        index++;
+                        Question qs = mQuestions.get(index);
+                        type = getQuestionType(qs);
+                        setAllViewFromType(type,qs);
+                    } else {
+                        next.setEnabled(false);
+                        previous.setEnabled(true);
+                        Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            //上一题
+            previous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (index > 0){
+                        previous.setEnabled(true);
+                        next.setEnabled(true);
+                        index--;
+                        Question qs = mQuestions.get(index);
+                        type = getQuestionType(qs);
+                        setAllViewFromType(type,qs);
+                    }else {
+                        previous.setEnabled(false);
+                        next.setEnabled(true);
+                        Toast.makeText(getActivity(), "已经是第一题了", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }else{
+            Toast.makeText(getActivity(), "题库为空,请再次刷新", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //根据不同的题目类型设置不同的界面
+    public void setAllViewFromType(int type,Question question){
+        switch (type) {
+            case 1:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                radio.setVisibility(View.VISIBLE);
+                a.setText(question.getA());
+                b.setText(question.getB());
+                c.setText(question.getC());
+                d.setText(question.getD());
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                break;
+            case 2:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.VISIBLE);
+                radio.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                break;
+            case 3:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                editText.setVisibility(View.VISIBLE);
+                torF.setVisibility(View.GONE);
+                radio.setVisibility(View.GONE);
+                checkbox.setVisibility(View.GONE);
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                break;
+            case 4:
+                title.setText(question.getTitle()+"("+ question.getScore()+"分"+")");
+                torF.setVisibility(View.GONE);
+                radio.setVisibility(View.GONE);
+                editText.setVisibility(View.GONE);
+                checkbox.setVisibility(View.VISIBLE);
+                answer_area.setVisibility(View.VISIBLE);
+                answer.setText(question.getAnswer());
+                analysis_area.setVisibility(View.VISIBLE);
+                analysis.setText(question.getAnalysis());
+                aa.setText(question.getA());
+                bb.setText(question.getB());
+                cc.setText(question.getC());
+                dd.setText(question.getD());
+                break;
+            case 0:
+                break;
+        }
     }
 }
 

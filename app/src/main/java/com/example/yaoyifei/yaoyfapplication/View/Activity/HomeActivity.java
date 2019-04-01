@@ -1,6 +1,8 @@
 package com.example.yaoyifei.yaoyfapplication.View.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragment;
+import com.example.yaoyifei.yaoyfapplication.View.Fragment.BlankFragmentTeacher;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.ChartFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.QuestionFragment;
 import com.example.yaoyifei.yaoyfapplication.View.Fragment.UserGradeFragment;
@@ -35,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener , BlankFragment.OnFragmentInteractionListener,BlankFragmentTeacher.OnFragmentInteractionListener {
 
     LoginActivity loginActivity = new LoginActivity();
     private DrawerLayout mDrwerLayout;
@@ -47,13 +50,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView mNavigationView;
     private TextView mShowName;
     private String username;//从登录界面传过来的用户名字
-    public static int time=0;//从教师主界面传过来的考试时间 atoa
     private SP mSp;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mContext = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
         mSp = new SP(this);
         setSupportActionBar(toolbar);
@@ -93,9 +97,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // init fragment
         mFragments = new ArrayList<>(4);
         mFragments.add(new BlankFragment());//指导学生操作的界面
-        mFragments.add(new QuestionFragment());//考试以及查看做题情况的界面
-        mFragments.add(new ChartFragment());//做题情况界面
-        mFragments.add(new UserGradeFragment());//个人和同学的成绩界面
+        mFragments.add(new QuestionFragment());//考试界面
+        mFragments.add(new ChartFragment());//个人做题情况界面
+        mFragments.add(new UserGradeFragment());//所有同学的成绩界面
 
         // init view pager
         mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -128,7 +132,22 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
                     mDrwerLayout.closeDrawers();
                 }else {
-                    mDrwerLayout.closeDrawers();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                    dialog.setIcon(R.drawable.ic_home_black_24dp);
+                    dialog.setTitle("关于");
+                    dialog.setMessage(
+                            "作者:姚逸飞\n"+
+                                    "\n"+
+                                    "手机:13296542887\n" +
+                                    "\n"+
+                                    "邮箱:yaoyf1101@thundersoft.com\n" +
+                                    "\n"+
+                                    "小菊花--安卓在线课堂小测试APP\n" +
+                                    "\n"+
+                                    "版本号:v1.0.0\n"+
+                                    "\n"+
+                                    "有任何建议或者反馈可以随时联系作者，谢谢！");
+                    dialog.show();
                 }
                 return true;
             }
@@ -255,12 +274,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.count){
             mViewPager.setCurrentItem(3,true);
-            Toast.makeText(HomeActivity.this,"统计功能正在努力实现中，敬请期待",Toast.LENGTH_SHORT).show();
         }else{
             mDrwerLayout.openDrawer(Gravity.LEFT);
         }
         return true;
     }
-
 }
 

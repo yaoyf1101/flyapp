@@ -24,7 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.List;
 
 
-public class UserGradeFragment extends Fragment  {
+public class UserGradeFragmentTeacher extends Fragment  {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLlm;
     private TextView tips;
@@ -52,12 +52,7 @@ public class UserGradeFragment extends Fragment  {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (QuestionFragment.isSave){
-                    getUserGrade();
-                }else{
-                    Toast.makeText(getActivity(), "您当前尚未结束考试，无法查看成绩", Toast.LENGTH_SHORT).show();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
+                getUserGrade();
             }
         });
         mRecyclerView = view.findViewById(R.id.recyclerview);
