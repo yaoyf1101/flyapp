@@ -1,6 +1,7 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -74,7 +75,9 @@ public class QuestionFragmentTeacher extends Fragment  {
             }
             @Override
             public void onError(Exception e) {
-
+                Looper.prepare();
+                Toast.makeText(getActivity(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                Looper.loop();
             }
         });
     }

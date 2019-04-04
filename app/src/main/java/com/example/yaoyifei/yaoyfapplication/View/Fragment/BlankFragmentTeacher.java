@@ -1,15 +1,21 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.R;
@@ -34,6 +40,7 @@ public class BlankFragmentTeacher extends Fragment {
 
     FloatingActionButton mFloatingActionButton ;
     private OnFragmentInteractionListener mListener;
+    private TextView textView;
 
     public BlankFragmentTeacher() {
         // Required empty public constructor
@@ -73,9 +80,26 @@ public class BlankFragmentTeacher extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "投屏功能正在努力实现中，敬请期待", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                PackageManager packageManager = getActivity().getPackageManager();
+                intent = packageManager.getLaunchIntentForPackage("net.yrom.screenrecorder");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_TOP) ;
+                getActivity().startActivity(intent);
             }
         });
+        textView= view.findViewById(R.id.text);
+        String html = "<h3>基本使用操作说明（教师）</h3>\n" +
+                "<ul>\n" +
+                "<li>目前暂未开放教师注册功能，请使用账号“<strong>teacher</strong>” 密码“<strong>123456</strong>”进行登录。</li>\n" +
+                "<li>登录时选择正确的<strong>教师身份</strong>并确保网络畅通，否则很可能登录失败。</li>\n" +
+                "<li>登录成功会进入主页，在此界面点击右下角的悬浮按钮即可进行<strong>投屏</strong>，在安装了流媒体播放器的任意客户端都可以显示屏幕内容。</li>\n" +
+                "<li>主页右滑动进入<strong>出题</strong>界面，输入题目信息后点击<strong>添加题目</strong>即可添加题目（题目类型分为客观题和主观题两种，客观题包括单选多选和判断，主观题包括填空和简答），点击操作题库即可对已经存在的题目进行<strong>编辑和删除</strong>操作。最后点击<strong>生成测试</strong>即可显示出的<strong>题目分值和题目用时</strong>（分值和测试时长由每道题的分值和用时累加得出，添加题目时由教师录入）并进入题目<strong>预览</strong>界面。</li>\n" +
+                "<li><strong>预览</strong>界面会显示所有题目的<strong>答案和解析</strong>。</li>\n" +
+                "<li>进入<strong>考生成绩</strong>界面查看已经提交成绩的学生答题结果。</li>\n" +
+                "\n" +
+                "</ul>\n";
+        textView.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
+        textView.setText(Html.fromHtml(html));
     }
 
     @Override

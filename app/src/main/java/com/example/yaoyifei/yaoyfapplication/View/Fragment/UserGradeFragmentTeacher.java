@@ -48,6 +48,7 @@ public class UserGradeFragmentTeacher extends Fragment  {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tips = view.findViewById(R.id.tips);
+        tips.setText("下拉刷新查看所有考生成绩");
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

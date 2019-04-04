@@ -1,20 +1,22 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.yaoyifei.yaoyfapplication.R;
-import com.example.yaoyifei.yaoyfapplication.View.Activity.HomeActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +37,7 @@ public class BlankFragment extends Fragment {
     private String mParam2;
 
     FloatingActionButton mFloatingActionButton ;
+    private TextView textView;
     private OnFragmentInteractionListener mListener;
 
     public BlankFragment() {
@@ -75,9 +78,26 @@ public class BlankFragment extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "投屏功能正在努力实现中，敬请期待", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                PackageManager packageManager = getActivity().getPackageManager();
+                intent = packageManager.getLaunchIntentForPackage("net.yrom.screenrecorder");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_TOP) ;
+                getActivity().startActivity(intent);
             }
         });
+        textView= view.findViewById(R.id.text);
+        String html = "<h3>基本使用操作说明（学生）</h3>\n" +
+                "<ul>\n" +
+                "<li>学生初次使用需先注册一个<strong>学生身份</strong>的账号。</li>\n" +
+                "<li>登录时选择正确的<strong>学生身份</strong>并确保<strong>网络畅通</strong>，否则很可能登录失败。</li>\n" +
+                "<li>登录成功会进入主页，在此界面点击右下角的悬浮按钮即可进行<strong>投屏</strong>，在安装了流媒体播放器的任意客户端都可以显示屏幕内容。</li>\n" +
+                "<li>主页右滑动进入<strong>考试界面</strong>，首次进入考试界面<strong>下拉刷新</strong>题库即可开始作答。点击屏幕下方的<strong>开始考试</strong>按钮才可以开始考试（此时考试开始计时），否则无法开始考试。点击<strong>下一题</strong>之前请确保当前题目已经作答。完成所有题目后请点击<strong>结束考试</strong>（如果<strong>考试时间结束</strong>也会结束考试），系统即会自动核对你的答案并跳转至<strong>我的成绩界面</strong>，你可以在此界面查看自己的得分情况。</li>\n" +
+                "<li>结束考试后你可以再次进入<strong>考试界面</strong>，查看问题的<strong>答案和解析</strong>。</li>\n" +
+                "<li>结束考试以后，你也可以进入<strong>考生成绩界面</strong>查看已经提交成绩的学生答题结果。</li>\n" +
+                "\n" +
+                "</ul>\n";
+        textView.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
+        textView.setText(Html.fromHtml(html));
     }
 
     @Override

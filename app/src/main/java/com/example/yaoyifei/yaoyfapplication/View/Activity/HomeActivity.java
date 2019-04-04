@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +55,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private String username;//从登录界面传过来的用户名字
     private SP mSp;
     private Context mContext;
+    //定义一个变量，来标识是否退出
+    private static boolean isExit=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +137,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
                     mDrwerLayout.closeDrawers();
+                    mViewPager.setCurrentItem(2);
                 }else {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                     dialog.setIcon(R.drawable.ic_home_black_24dp);
@@ -152,6 +159,36 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
+    }
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            super.handleMessage(msg);
+            isExit=false;
+        }
+    };
+
+    @Override
+    public boolean onKeyDown(int keyCode,KeyEvent event){
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode,event);
+    }
+
+    private void exit(){
+        if(!isExit){
+            isExit=true;
+            Toast.makeText(getApplicationContext(),"再按一次退出程序",Toast.LENGTH_SHORT).show();
+            //利用handler延迟发送更改状态信息
+            handler.sendEmptyMessageDelayed(0,2000);
+        }
+        else{
+            finish();
+            System.exit(0);
+        }
     }
 
     @Override
