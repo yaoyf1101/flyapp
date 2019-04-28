@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,11 @@ public class QuestionFragment extends Fragment  {
     private CheckBox dd;
     private EditText editText;
     private SwipeRefreshLayout swipeRefreshLayout;
+    //更新界面 20190428 begin
+    private LinearLayout switcharea;
+    private ScrollView scrollView;
+    private TextView tips;
+    //更新界面 20190428 end
     private List<Question> mQuestions = null;
     private int count;
     private int index;
@@ -101,6 +107,9 @@ public class QuestionFragment extends Fragment  {
                     public void run() {
                         initView();
                         swipeRefreshLayout.setRefreshing(false);
+                        scrollView.setVisibility(View.VISIBLE);
+                        switcharea.setVisibility(View.VISIBLE);
+                        tips.setVisibility(View.GONE);
                     }
                 });
             }
@@ -130,7 +139,7 @@ public class QuestionFragment extends Fragment  {
                 getQuestion();
             }
         });
-        //题目区域mQuestions.get(i).getAnswer()
+        //题目区域mQuestions.get(i).getUseranswer()
         title = (TextView) view.findViewById(R.id.title);
         //判断题区域
         torF = (LinearLayout) view.findViewById(R.id.TorF);
@@ -165,6 +174,12 @@ public class QuestionFragment extends Fragment  {
         save = view.findViewById(R.id.save_answer);
         //倒计时
         countdowntimer = view.findViewById(R.id.CountDownTimer);
+        tips = view.findViewById(R.id.tips);
+        tips.setVisibility(View.VISIBLE);
+        scrollView = view.findViewById(R.id.scrollView);//更新界面
+        scrollView.setVisibility(View.INVISIBLE);
+        switcharea = view.findViewById(R.id.switch_area);//更新界面
+        switcharea.setVisibility(View.INVISIBLE);
     }
 
     public void initView(){
@@ -259,9 +274,9 @@ public class QuestionFragment extends Fragment  {
                             next.setEnabled(true);
                             save.setEnabled(false);
                             getScoreFromAnswer();
-                            CheckAnswerToScore();
+                            checkAnswerToScore();
                             ChartFragment.showBarChartMore();
-                            ChartFragment.showYunTu();
+                           //ChartFragment.showYunTu();
                             ViewPager vp = HomeActivity.getmViewPager();
                             vp.setCurrentItem(2);
                         }
@@ -350,35 +365,35 @@ public class QuestionFragment extends Fragment  {
         final UserAnswer userAnswer = new UserAnswer();
         //判断题和单选题的监听
         if (type==1){
-            if (a.isChecked()==true){ userAnswer.setAnswer("A"); }
-            if (b.isChecked()==true){ userAnswer.setAnswer("B"); }
-            if (c.isChecked()==true){ userAnswer.setAnswer("C"); }
-            if (d.isChecked()==true){ userAnswer.setAnswer("D"); }
+            if (a.isChecked()==true){ userAnswer.setUseranswer("A"); }
+            if (b.isChecked()==true){ userAnswer.setUseranswer("B"); }
+            if (c.isChecked()==true){ userAnswer.setUseranswer("C"); }
+            if (d.isChecked()==true){ userAnswer.setUseranswer("D"); }
         }else if (type==2){
-            if (t.isChecked()==true){ userAnswer.setAnswer("T"); }
-            if (f.isChecked()==true){ userAnswer.setAnswer("F"); }
+            if (t.isChecked()==true){ userAnswer.setUseranswer("T"); }
+            if (f.isChecked()==true){ userAnswer.setUseranswer("F"); }
         }else if (type==4){
-            if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ABCD"); }
-            if (!aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("B"); }
-            if (!aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("C"); }
-            if (!aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("D"); }
-            if (aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("A"); }
-            if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("ABC"); }
-            if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ABD"); }
-            if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("ACD"); }
-            if (!aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("BCD"); }
-            if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("AB"); }
-            if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("AC"); }
-            if (aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("AD"); }
-            if (!aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setAnswer("BC"); }
-            if (!aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("BD"); }
-            if (!aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setAnswer("CD"); }
+            if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("ABCD"); }
+            if (!aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("B"); }
+            if (!aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("C"); }
+            if (!aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("D"); }
+            if (aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("A"); }
+            if (aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("ABC"); }
+            if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("ABD"); }
+            if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("ACD"); }
+            if (!aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("BCD"); }
+            if (aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("AB"); }
+            if (aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("AC"); }
+            if (aa.isChecked()&&!bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("AD"); }
+            if (!aa.isChecked()&&bb.isChecked()&&cc.isChecked()&&!dd.isChecked()){ userAnswer.setUseranswer("BC"); }
+            if (!aa.isChecked()&&bb.isChecked()&&!cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("BD"); }
+            if (!aa.isChecked()&&!bb.isChecked()&&cc.isChecked()&&dd.isChecked()){ userAnswer.setUseranswer("CD"); }
         }else if (type==3){
             if (!TextUtils.isEmpty(editText.getText().toString())){
-                userAnswer.setAnswer(editText.getText().toString());
+                userAnswer.setUseranswer(editText.getText().toString());
             }
         }
-        if (TextUtils.isEmpty(userAnswer.getAnswer())){
+        if (TextUtils.isEmpty(userAnswer.getUseranswer())){
             Toast.makeText(getActivity(), "没有检测到上一题的答案,请点击'上一题'作答", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -412,9 +427,9 @@ public class QuestionFragment extends Fragment  {
                 isEnd = true;
                 if (!isSave) {
                     getScoreFromAnswer();
-                    CheckAnswerToScore();
+                    checkAnswerToScore();
                     ChartFragment.showBarChartMore();
-                    ChartFragment.showYunTu();
+                   // ChartFragment.showYunTu();
                     ViewPager vp = HomeActivity.getmViewPager();
                     vp.setCurrentItem(2);
                 }
@@ -423,7 +438,7 @@ public class QuestionFragment extends Fragment  {
     }
 
     //核对答案给出分数
-    public void CheckAnswerToScore(){
+    public void checkAnswerToScore(){
         float score=0;//主观题分数
         float score1=0;//多选题分数
         float score2=0;//单选题分数
@@ -432,31 +447,31 @@ public class QuestionFragment extends Fragment  {
         if (answers.size()>0&&!answers.isEmpty()) {
             for (int i = 0; i < mQuestions.size(); i++) {
                 if (mQuestions.get(i).getType().equals("主观题")) {
-                    stringBuilder.append(answers.get(i).getAnswer());
-                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                    stringBuilder.append(answers.get(i).getUseranswer());
+                    if (mQuestions.get(i).getAnswer().equals(answers.get(i).getUseranswer())) {
                         score = score + Integer.parseInt(mQuestions.get(i).getScore());
-                    } else if (SimilarityUtils.Index_BF(answers.get(i).getAnswer(), mQuestions.get(i).getAnswer()) >= 0) {
+                    } else if (SimilarityUtils.Index_BF(answers.get(i).getUseranswer(), mQuestions.get(i).getAnswer()) >= 0) {
                         score = score + Integer.parseInt(mQuestions.get(i).getScore());
-                    } else if (SimilarityUtils.levenshtein(mQuestions.get(i).getAnswer().toLowerCase(), answers.get(i).getAnswer().toLowerCase()) > 0.5) {
+                    } else if (SimilarityUtils.levenshtein(mQuestions.get(i).getAnswer().toLowerCase(), answers.get(i).getUseranswer().toLowerCase()) > 0.5) {
                         score = score + Integer.parseInt(mQuestions.get(i).getScore()) / 2;
                     } else {
                         score = score + 0;
                     }
                 } else {
                     if (mQuestions.get(i).getType().equals("多选题")) {
-                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getUseranswer())) {
                             score1 = score1 + Integer.parseInt(mQuestions.get(i).getScore());
                         } else {
-                            if (SimilarityUtils.Index_BF(mQuestions.get(i).getAnswer(), answers.get(i).getAnswer()) != -1) {
+                            if (SimilarityUtils.Index_BF(mQuestions.get(i).getAnswer(), answers.get(i).getUseranswer()) != -1) {
                                 score1 = score1 + (Integer.parseInt(mQuestions.get(i).getScore()) / 2);
                             }
                         }
                     } else if (mQuestions.get(i).getType().equals("单选题")) {
-                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getUseranswer())) {
                             score2 = score2 + Integer.parseInt(mQuestions.get(i).getScore());
                         }
                     } else if (mQuestions.get(i).getType().equals("判断题")) {
-                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getAnswer())) {
+                        if (mQuestions.get(i).getAnswer().equals(answers.get(i).getUseranswer())) {
                             score3 = score3 + Integer.parseInt(mQuestions.get(i).getScore());
                         }
                     }
@@ -464,12 +479,12 @@ public class QuestionFragment extends Fragment  {
             }
             fileUtil.save(stringBuilder.toString());//保存主观题答案到文件中
             mSp.writesScore(score, score1, score2, score3);
-            Map<String,Object> data = mSp.load();
+            Map<String,Object> data = mSp.load();//获取登录的用户信息
             userGrade.setUsername(data.get("name").toString());
-            userGrade.setScore((int) score);
-            userGrade.setScore1((int) score1);
-            userGrade.setScore2((int) score2);
-            userGrade.setScore3((int) score3);
+            userGrade.setScorezg((int) score);//自动结算主观题分数，先存到数据库，后续老师可以更新分数。
+            userGrade.setScoreduox((int) score1);
+            userGrade.setScoredanx((int) score2);
+            userGrade.setScorepd((int) score3);
             if (!isCommit){
                 commitGrade(userGrade);
             }else {
@@ -479,10 +494,10 @@ public class QuestionFragment extends Fragment  {
         }else{
             Map<String,Object> data = mSp.load();
             userGrade.setUsername(data.get("name").toString());
-            userGrade.setScore(0);
-            userGrade.setScore1(0);
-            userGrade.setScore2(0);
-            userGrade.setScore3(0);
+            userGrade.setScorezg(0);
+            userGrade.setScoreduox(0);
+            userGrade.setScoredanx(0);
+            userGrade.setScorepd(0);
             if (!isCommit){
                 commitGrade(userGrade);
             }else {
@@ -513,7 +528,7 @@ public class QuestionFragment extends Fragment  {
         });
     }
 
-    // 获取题目的分数
+    // 获取题目的满分分数
     public void getScoreFromAnswer() {
         float score = 0; // 主观题分数
         float score1 = 0;// 多选题分数
@@ -540,7 +555,7 @@ public class QuestionFragment extends Fragment  {
         int time = 0;
         if (mQuestions != null) {
             for (int i = 0; i < mQuestions.size(); i++) {
-                String string = mQuestions.get(i).getT();
+                String string = mQuestions.get(i).getTime();
                 time = time + Integer.valueOf(string);
             }
         }
@@ -563,7 +578,7 @@ public class QuestionFragment extends Fragment  {
         isCommit = true;
         if (mQuestions != null && mQuestions.size()>0) {
             count = mQuestions.size();//题目数量
-            answers = new ArrayList<>(count);
+           // answers = new ArrayList<>(count);
             save.setVisibility(View.GONE);
             starttest.setVisibility(View.GONE);
             //初始化题库中的第一道题
@@ -673,5 +688,3 @@ public class QuestionFragment extends Fragment  {
         }
     }
 }
-
-

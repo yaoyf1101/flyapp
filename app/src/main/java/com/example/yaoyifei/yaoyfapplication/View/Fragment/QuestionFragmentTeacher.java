@@ -13,18 +13,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yaoyifei.yaoyfapplication.Entity.Question;
-import com.example.yaoyifei.yaoyfapplication.Entity.UserAnswer;
 import com.example.yaoyifei.yaoyfapplication.R;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionFragmentTeacher extends Fragment  {
@@ -47,11 +46,17 @@ public class QuestionFragmentTeacher extends Fragment  {
     private CheckBox dd;
     private EditText editText;
     private SwipeRefreshLayout swipeRefreshLayout;
+    //更新界面 20190428 begin
+    private LinearLayout switcharea;
+    private ScrollView scrollView;
+    private TextView tips;
+    //更新界面 20190428 end
     private List<Question> mQuestions = null;
     private int count;
     private int index;
     private int type;
-    public List<UserAnswer> answers;
+    //优化代码 20190428
+    // public List<UserAnswer> answers;
     final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +75,9 @@ public class QuestionFragmentTeacher extends Fragment  {
                     public void run() {
                         initAllView();
                         swipeRefreshLayout.setRefreshing(false);
+                        scrollView.setVisibility(View.VISIBLE);
+                        switcharea.setVisibility(View.VISIBLE);
+                        tips.setVisibility(View.GONE);
                     }
                 });
             }
@@ -128,6 +136,12 @@ public class QuestionFragmentTeacher extends Fragment  {
         previous = (Button) view.findViewById(R.id.btn_previous);
         starttest = (Button) view.findViewById(R.id.btn_start_test);
         save = view.findViewById(R.id.save_answer);
+        tips = view.findViewById(R.id.tips);
+        tips.setVisibility(View.VISIBLE);
+        scrollView = view.findViewById(R.id.scrollView);//更新界面
+        scrollView.setVisibility(View.INVISIBLE);
+        switcharea = view.findViewById(R.id.switch_area);//更新界面
+        switcharea.setVisibility(View.INVISIBLE);
     }
 
 
@@ -135,7 +149,7 @@ public class QuestionFragmentTeacher extends Fragment  {
     public void initAllView(){
         if (mQuestions != null && mQuestions.size()>0) {
             count = mQuestions.size();//题目数量
-            answers = new ArrayList<>(count);
+          //  answers = new ArrayList<>(count);
             save.setVisibility(View.GONE);
             starttest.setVisibility(View.GONE);
             //初始化题库中的第一道题

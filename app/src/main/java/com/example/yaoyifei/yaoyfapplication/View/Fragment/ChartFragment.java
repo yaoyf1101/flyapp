@@ -1,7 +1,6 @@
 package com.example.yaoyifei.yaoyfapplication.View.Fragment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.yaoyifei.yaoyfapplication.R;
@@ -17,13 +17,8 @@ import com.example.yaoyifei.yaoyfapplication.tools.BarChartManager;
 import com.example.yaoyifei.yaoyfapplication.tools.FileUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.SP;
 import com.github.mikephil.charting.charts.BarChart;
-import com.mordred.wordcloud.WordCloud;
-
-import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.ToAnalysis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +26,10 @@ public class ChartFragment extends Fragment  {
 
     public static BarChart barChat;
     public static ImageView imageView;
+    private LinearLayout linearLayout;
     private Context mContext;
     private static SP mSp;
-    private static FileUtil mFileUtil;
+  //  private static FileUtil mFileUtil;
     private static TextView textView,textView1;
     static Float keguan,keguan1,zhuguan,zhuguan1;
 
@@ -42,7 +38,7 @@ public class ChartFragment extends Fragment  {
         super.onCreate(savedInstanceState);
         mContext = getContext();
         mSp = new SP(mContext);
-        mFileUtil = new FileUtil(mContext);
+    //    mFileUtil = new FileUtil(mContext);
     }
 
     @Override
@@ -56,8 +52,11 @@ public class ChartFragment extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
         barChat = (BarChart) view.findViewById(R.id.Bar_chat);
         imageView = view.findViewById(R.id.image);
+        imageView.setVisibility(View.GONE);//更新界面
         textView= view.findViewById(R.id.text_chart);
         textView1= view.findViewById(R.id.text1_chart);
+        linearLayout = view.findViewById(R.id.linear_layout);
+        linearLayout.setVisibility(View.GONE);//更新界面
     }
 
     //显示柱状图
@@ -112,7 +111,7 @@ public class ChartFragment extends Fragment  {
     }
 
     //显示云图
-    public static void showYunTu() {
+    /*public static void showYunTu() {
         String str = mFileUtil.load();
         mFileUtil.deleteFile();//每次从文件中服务数据后清除数据
         Map<String, Integer> wordMap = new HashMap<>();
@@ -136,6 +135,6 @@ public class ChartFragment extends Fragment  {
         wd.setWordColorOpacityAuto(true);
         Bitmap generatedWordCloudBmp = wd.generate();
         imageView.setImageBitmap(generatedWordCloudBmp);
-    }
+    }*/
 
 }

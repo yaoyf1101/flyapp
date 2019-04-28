@@ -3,10 +3,10 @@ package com.example.yaoyifei.yaoyfapplication.Entity;
 public class UserGrade {
     private int id;
     private String username;
-    private int score;
-    private int score1;
-    private int score2;
-    private int score3;
+    private int scorezg;
+    private int scoreduox;
+    private int scoredanx;
+    private int scorepd;
 
     public int getId() {
         return id;
@@ -24,36 +24,36 @@ public class UserGrade {
         this.username = usename;
     }
 
-    public int getScore() {
-        return score;
+    public int getScorezg() {
+        return scorezg;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setScorezg(int scorezg) {
+        this.scorezg = scorezg;
     }
 
-    public int getScore1() {
-        return score1;
+    public int getScoreduox() {
+        return scoreduox;
     }
 
-    public void setScore1(int score1) {
-        this.score1 = score1;
+    public void setScoreduox(int scoreduox) {
+        this.scoreduox = scoreduox;
     }
 
-    public int getScore2() {
-        return score2;
+    public int getScoredanx() {
+        return scoredanx;
     }
 
-    public void setScore2(int score2) {
-        this.score2 = score2;
+    public void setScoredanx(int scoredanx) {
+        this.scoredanx = scoredanx;
     }
 
-    public int getScore3() {
-        return score3;
+    public int getScorepd() {
+        return scorepd;
     }
 
-    public void setScore3(int score3) {
-        this.score3 = score3;
+    public void setScorepd(int scorepd) {
+        this.scorepd = scorepd;
     }
 
     @Override
@@ -61,10 +61,10 @@ public class UserGrade {
         return "UserGrade{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", score=" + score +
-                ", score1=" + score1 +
-                ", score2=" + score2 +
-                ", score3=" + score3 +
+                ", scorezg=" + scorezg +
+                ", scoreduox=" + scoreduox +
+                ", scoredanx=" + scoredanx +
+                ", scorepd=" + scorepd +
                 '}';
     }
 }

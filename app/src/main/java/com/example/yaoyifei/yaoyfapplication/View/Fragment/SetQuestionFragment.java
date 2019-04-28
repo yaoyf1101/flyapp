@@ -206,7 +206,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
             question.setAnalysis(Analysis);
             question.setType(Type);
             question.setScore(Score);
-            question.setT(Time);//T选项重构为用时
+            question.setTime(Time);//题目用时
             question.setA(A);
             question.setB(B);
             question.setC(C);

@@ -11,8 +11,8 @@ public class Question implements Serializable {
      * c :
      * answer : java是个坑爹玩意儿
      * d :
-     * t :
-     * f :
+     * time :
+     * test :
      * id : 2
      * analysis : java是个坑爹玩意儿
      * title : 请问java是什么？
@@ -25,8 +25,8 @@ public class Question implements Serializable {
     private String c;
     private String answer;//正确答案
     private String d;
-    private String t;//重构T选项为本题用时
-    private String f;//可扩展选项
+    private String time;//本题用时
+    private String test;//备选项
     private int id;//题目id
     private String analysis;//答案解析
     private String title;// 题目描述
@@ -80,22 +80,6 @@ public class Question implements Serializable {
         this.d = d;
     }
 
-    public String getT() {
-        return t;
-    }
-
-    public void setT(String t) {
-        this.t = t;
-    }
-
-    public String getF() {
-        return f;
-    }
-
-    public void setF(String f) {
-        this.f = f;
-    }
-
     public int getId() {
         return id;
     }
@@ -126,5 +110,21 @@ public class Question implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
     }
 }

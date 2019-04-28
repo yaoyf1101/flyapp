@@ -45,10 +45,10 @@ public class AdapterUserGrade extends RecyclerView.Adapter<ViewHolderUserGrade> 
         if (data != null) {
             UserGrade userGrade = data.get(i);
             viewHolderUserGrade.mTv_user_name.setText("亲爱的"+userGrade.getUsername()+"同学,你的成绩如下：");
-            viewHolderUserGrade.mTv_panduanti.setText(userGrade.getScore3()+"分");
-            viewHolderUserGrade.mTv_zhuguanti.setText(userGrade.getScore()+"分");
-            viewHolderUserGrade.mTv_duoxuanti.setText(userGrade.getScore1()+"分");
-            viewHolderUserGrade.mTv_danxuanti.setText(userGrade.getScore2()+"分");
+            viewHolderUserGrade.mTv_panduanti.setText(userGrade.getScorepd()+"分");
+            viewHolderUserGrade.mTv_zhuguanti.setText(userGrade.getScorezg()+"分");
+            viewHolderUserGrade.mTv_duoxuanti.setText(userGrade.getScoreduox()+"分");
+            viewHolderUserGrade.mTv_danxuanti.setText(userGrade.getScoredanx()+"分");
         }
     }
 

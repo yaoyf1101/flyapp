@@ -65,7 +65,8 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:orientation="horizontal"
-            android:paddingLeft="10dp">
+            android:paddingLeft="10dp"
+            android:id="@+id/linear_layout">
 
             <TextView
                 android:layout_width="2dp"
