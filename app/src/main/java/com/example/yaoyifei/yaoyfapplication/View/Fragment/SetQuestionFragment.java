@@ -27,6 +27,10 @@ import com.example.yaoyifei.yaoyfapplication.View.Activity.TeacherHomeActivity;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpCallbackListener;
 import com.example.yaoyifei.yaoyfapplication.tools.HttpUtil;
 import com.example.yaoyifei.yaoyfapplication.tools.JsonUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 public class SetQuestionFragment extends Fragment implements View.OnClickListener {
 
@@ -40,8 +44,10 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
     private ScrollView scrollView;
     private Button btn_back,reload,generatetest;
     private LinearLayout function_area;
+    private LinearLayout abcd;
     private String Type = "";
-    private Boolean isSet = false;
+    private List<Question> mQuestions = null;
+    final String address = "http://47.102.199.28/flyapp/getQuestionServlet";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,15 +74,19 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(danxuan.isChecked()==true){
                     Type = "单选题";
+                    abcd.setVisibility(View.VISIBLE);
                 }
                 if(duoxuan.isChecked()==true){
                     Type = "多选题";
+                    abcd.setVisibility(View.VISIBLE);
                 }
                 if(panduan.isChecked()==true){
                     Type = "判断题";
+                    abcd.setVisibility(View.GONE);
                 }
                 if(tiankongorjianda.isChecked()==true){
                     Type = "主观题";
+                    abcd.setVisibility(View.GONE);
                 }
             }
         });
@@ -101,9 +111,54 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
         btn_back = view.findViewById(R.id.back);
         reload = view.findViewById(R.id.reload);
         generatetest = view.findViewById(R.id.generate_test);
+        abcd = view.findViewById(R.id.linear_layout2);
+        abcd.setVisibility(View.GONE);
         btn_back.setOnClickListener(this);
         reload.setOnClickListener(this);
         generatetest.setOnClickListener(this);
+    }
+    //通过网络获取题目
+    private void getQuestion() {
+        HttpUtil.getQuestion(address, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Gson gson = new Gson();
+                mQuestions = gson.fromJson(response,new TypeToken<List<Question>>(){}.getType());
+                getActivity().runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        if (mQuestions != null && mQuestions.size()>0) {
+                            //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
+                            AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                            //    设置Title的内容
+                            builder2.setTitle("测试已生成");
+                            //    设置Content来显示一个信息
+                            builder2.setMessage("是否跳转到预览界面预览题目");
+                            //    设置一个PositiveButton
+                            builder2.setPositiveButton("跳转", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ViewPager vp = TeacherHomeActivity.getmViewPager();
+                                    vp.setCurrentItem(2);
+                                }
+                            });
+                            //    设置一个NegativeButton
+                            builder2.setNegativeButton("取消", null);
+                            //    显示出该对话框
+                            builder2.show();
+                        }else{
+                            Toast.makeText(getActivity(), "题库没有题目", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+            @Override
+            public void onError(Exception e) {
+                Looper.prepare();
+                Toast.makeText(getActivity(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        });
     }
 
     @Override
@@ -113,7 +168,7 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                 //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 //    设置Title的内容
-                builder.setTitle("是否要保存？");
+                builder.setTitle("是否要保存添加的题目？");
                 //    设置Content来显示一个信息
                 builder.setMessage("确定保存吗？");
                 //    设置一个PositiveButton
@@ -147,31 +202,10 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                 btn_back.setVisibility(View.GONE);
                 break;
             case R.id.reload:
-               webView.reload();
+                webView.reload();
                 break;
             case R.id.generate_test:
-                if (isSet) {
-                    //    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-                    AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
-                    //    设置Title的内容
-                    builder2.setTitle("测试已生成");
-                    //    设置Content来显示一个信息
-                    builder2.setMessage("是否跳转到预览界面预览题目");
-                    //    设置一个PositiveButton
-                    builder2.setPositiveButton("跳转", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ViewPager vp = TeacherHomeActivity.getmViewPager();
-                            vp.setCurrentItem(2);
-                        }
-                    });
-                    //    设置一个NegativeButton
-                    builder2.setNegativeButton("取消", null);
-                    //    显示出该对话框
-                    builder2.show();
-                }else{
-                    Toast.makeText(getActivity(), "您还未添加题目呢", Toast.LENGTH_SHORT).show();
-                }
+                getQuestion();
                 break;
         }
     }
@@ -217,7 +251,6 @@ public class SetQuestionFragment extends Fragment implements View.OnClickListene
                 public void onFinish(String response) {
                     Looper.prepare();
                     Toast.makeText(getActivity(), "添加题目成功", Toast.LENGTH_SHORT).show();
-                    isSet = true;
                     Looper.loop();
                 }
 

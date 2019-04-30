@@ -136,7 +136,8 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
                     mDrwerLayout.closeDrawers();
-                    mViewPager.setCurrentItem(3);
+                    Intent intent = new Intent(TeacherHomeActivity.this, AnswerActivity.class);
+                    startActivity(intent);
                 }else {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                     dialog.setIcon(R.drawable.ic_home_black_24dp);
@@ -309,7 +310,8 @@ public class TeacherHomeActivity extends AppCompatActivity implements View.OnCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.count){
-            mViewPager.setCurrentItem(3,true);
+            Intent intent= new Intent(TeacherHomeActivity.this,ChartActivity.class);
+            startActivity(intent);
         }else{
             mDrwerLayout.openDrawer(Gravity.LEFT);
         }

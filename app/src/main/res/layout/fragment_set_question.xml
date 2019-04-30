@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,23 +18,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="题目名称"
-                    android:gravity="center"
-                    android:textStyle="italic"
-                    android:textSize="20sp"/>
-
+                    android:text="题目"
+                    android:layout_marginTop="5dp"
+                    android:textSize="16sp"/>
                 <EditText
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffffff"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
-                    android:hint="题目"
                     android:textColor="#ff000000"
                     android:textSize="20sp" />
 
@@ -41,15 +38,14 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:orientation="horizontal"
+                android:layout_marginTop="5dp"
                 android:id="@+id/radio_group">
                 <!--题型选择-->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textStyle="bold"
                     android:text="题型选择"
                     android:layout_gravity="center"/>
                 <RadioButton
@@ -80,7 +76,6 @@
                     android:id="@+id/tiankongorjianda"
                     android:layout_width="match_parent"
                     android:layout_weight="1"
-
                     android:layout_height="wrap_content"
                     android:text="主观"
                     android:layout_margin="5dp"/>
@@ -89,7 +84,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:id="@+id/linear_layout2">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -166,72 +162,68 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="5dp">
+                android:orientation="horizontal">
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="本题分值"
-                    android:textSize="20sp" />
+                    android:text="分值"
+                    android:textSize="16sp" />
+
                 <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:id="@+id/score"
-                    android:hint="单位分"
-                    android:inputType="number"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:inputType="number" />
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="本题用时"
-                    android:textSize="20sp" />
+                    android:text="用时"
+                    android:textSize="16sp" />
                 <EditText
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:id="@+id/time"
-                    android:hint="单位分钟"
                     android:inputType="number"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="正确答案"
-                    android:gravity="center"
-                    android:textStyle="italic"
-                    android:textSize="20sp"/>
+                    android:textSize="16sp"
+                    android:layout_marginTop="5dp"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:id="@+id/answer"
-                    android:hint="正确答案"/>
+                    android:id="@+id/answer" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="答案解析"
-                    android:gravity="center"
-                    android:textStyle="italic"
-                    android:textSize="20sp"/>
+                    android:layout_marginTop="5dp"
+                    android:textSize="16sp"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:id="@+id/analysis"
-                    android:hint="答案解析"/>
+                    android:id="@+id/analysis" />
             </LinearLayout>
 
         </LinearLayout>

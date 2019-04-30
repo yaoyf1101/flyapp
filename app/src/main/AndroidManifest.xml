@@ -14,12 +14,14 @@
         <activity android:name=".View.Activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".View.Activity.RegisterActivity" />
         <activity android:name=".View.Activity.ForgotPasswdActivity" />
+        <activity android:name=".View.Activity.ChartActivity" />
+        <activity android:name=".View.Activity.AnswerActivity" />
+        <activity android:name=".View.Activity.StudentAnswerActivity" />
         <activity
             android:name=".View.Activity.HomeActivity"
             android:windowSoftInputMode="adjustPan" />

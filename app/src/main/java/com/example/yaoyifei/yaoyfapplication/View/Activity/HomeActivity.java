@@ -136,8 +136,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                     finish();
                 }else if(menuItem.getItemId()==R.id.navigation_request_test){
-                    mDrwerLayout.closeDrawers();
-                    mViewPager.setCurrentItem(2);
+                    Intent intent = new Intent(HomeActivity.this, StudentAnswerActivity.class);
+                    startActivity(intent);
                 }else {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                     dialog.setIcon(R.drawable.ic_home_black_24dp);
@@ -151,7 +151,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                     "\n"+
                                     "小菊花--安卓在线课堂小测试APP\n" +
                                     "\n"+
-                                    "版本号:v1.0.0\n"+
+                                    "版本号:v2.0.0\n"+
                                     "\n"+
                                     "有任何建议或者反馈可以随时联系作者，谢谢！");
                     dialog.show();
@@ -310,7 +310,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.count){
-            mViewPager.setCurrentItem(3,true);
+            mDrwerLayout.closeDrawers();
+            mViewPager.setCurrentItem(2);
         }else{
             mDrwerLayout.openDrawer(Gravity.LEFT);
         }

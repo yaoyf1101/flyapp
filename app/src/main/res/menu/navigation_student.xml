@@ -4,7 +4,7 @@
      <item
          android:id="@+id/navigation_request_test"
          android:icon="@drawable/ic_dashboard_black_24dp"
-         android:title="批改主观题" />
+         android:title="查看答题结果" />
      <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home_black_24dp"

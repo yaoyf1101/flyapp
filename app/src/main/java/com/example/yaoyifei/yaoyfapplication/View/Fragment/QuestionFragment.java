@@ -202,8 +202,9 @@ public class QuestionFragment extends Fragment  {
                             next.setEnabled(true);
                             previous.setEnabled(true);
                             Question question = mQuestions.get(index);
+                            String title = question.getTitle();
                             type = getQuestionType(question);
-                            getYouAnswerFromType(index, type);
+                            getYouAnswerFromType(index, type,title);
                             clearSelect();
                             index++;
                             Question qs = mQuestions.get(index);
@@ -215,7 +216,8 @@ public class QuestionFragment extends Fragment  {
                             Toast.makeText(getActivity(), "最后一题了", Toast.LENGTH_SHORT).show();
                             Question question = mQuestions.get(count - 1);
                             type = getQuestionType(question);
-                            getYouAnswerFromType(count - 1, type);
+                            String title = question.getTitle();
+                            getYouAnswerFromType(count - 1, type,title);
                         }
                     }else {
                         Toast.makeText(getActivity(), "考试未开始或者考试已结束", Toast.LENGTH_SHORT).show();
@@ -243,7 +245,6 @@ public class QuestionFragment extends Fragment  {
                         }
                     }else {
                         Toast.makeText(getActivity(), "考试未开始或者考试已结束", Toast.LENGTH_SHORT).show();
-
                     }
                 }
             });
@@ -361,7 +362,7 @@ public class QuestionFragment extends Fragment  {
     }
 
     //通过类型获取题目答案
-    public void getYouAnswerFromType(final int index, int type){
+    public void getYouAnswerFromType(final int index, int type,String title){
         final UserAnswer userAnswer = new UserAnswer();
         //判断题和单选题的监听
         if (type==1){
@@ -391,6 +392,11 @@ public class QuestionFragment extends Fragment  {
         }else if (type==3){
             if (!TextUtils.isEmpty(editText.getText().toString())){
                 userAnswer.setUseranswer(editText.getText().toString());
+                Map<String,Object> data = mSp.load();//获取登录的用户信息
+                userAnswer.setUsername(data.get("name").toString());
+                userAnswer.setTitle(title);
+                userAnswer.setActualscore(0+"");
+                commitAnswer(userAnswer);//主观题答案需要保存到数据库
             }
         }
         if (TextUtils.isEmpty(userAnswer.getUseranswer())){
@@ -402,7 +408,6 @@ public class QuestionFragment extends Fragment  {
         }else {
             answers.set(index,userAnswer);
         }
-
     }
 
     //格式化时间
@@ -420,7 +425,6 @@ public class QuestionFragment extends Fragment  {
             public void onTick(long millisUntilFinished) {
                 countdowntimer.setText(formatDuring(millisUntilFinished));
             }
-
             @Override
             public void onFinish() {
                 countdowntimer.setText("考试结束");
@@ -487,10 +491,10 @@ public class QuestionFragment extends Fragment  {
             userGrade.setScorepd((int) score3);
             if (!isCommit){
                 commitGrade(userGrade);
+                //Toast.makeText(mContext, userGrade.toString(), Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(mContext, "已经查看过答案和解析就不能再提交了哦", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(mContext, userGrade.toString(), Toast.LENGTH_SHORT).show();
         }else{
             Map<String,Object> data = mSp.load();
             userGrade.setUsername(data.get("name").toString());
@@ -516,6 +520,26 @@ public class QuestionFragment extends Fragment  {
             public void onFinish(String response) {
                 Looper.prepare();
                 Toast.makeText(getActivity(), "成绩提交成功", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Looper.prepare();
+                Toast.makeText(getActivity(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        });
+    }
+    //提交主观题答案信息
+    public void commitAnswer(UserAnswer userAnswer){
+        final String address = "http://47.102.199.28/flyapp/addUserAnswerFromClient";
+        final String json = JsonUtil.converJavaBeanToJson(userAnswer);
+        HttpUtil.sendQuestion(address, json, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Looper.prepare();
+                //Toast.makeText(getActivity(), "答案信息提交成功", Toast.LENGTH_SHORT).show();
                 Looper.loop();
             }
 

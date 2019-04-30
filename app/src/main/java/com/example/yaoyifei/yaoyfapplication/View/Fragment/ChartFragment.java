@@ -27,6 +27,7 @@ public class ChartFragment extends Fragment  {
     public static BarChart barChat;
     public static ImageView imageView;
     private LinearLayout linearLayout;
+    private LinearLayout linearLayout1;
     private Context mContext;
     private static SP mSp;
   //  private static FileUtil mFileUtil;
@@ -56,7 +57,9 @@ public class ChartFragment extends Fragment  {
         textView= view.findViewById(R.id.text_chart);
         textView1= view.findViewById(R.id.text1_chart);
         linearLayout = view.findViewById(R.id.linear_layout);
+        linearLayout1 = view.findViewById(R.id.linear_layout1);
         linearLayout.setVisibility(View.GONE);//更新界面
+        linearLayout1.setVisibility(View.GONE);//更新界面
     }
 
     //显示柱状图
