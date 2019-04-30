@@ -257,6 +257,10 @@ public class QuestionFragment extends Fragment  {
                     starttest.setEnabled(false);
                     int time = getTime();
                     setTimer(time);
+                    UserAnswer userAnswer = new UserAnswer();
+                    Map<String,Object> data = mSp.load();//获取登录的用户信息
+                    userAnswer.setUsername(data.get("name").toString());
+                    clearAnswer(userAnswer);
                 }
             });
             //保存提交
@@ -552,6 +556,26 @@ public class QuestionFragment extends Fragment  {
         });
     }
 
+    //清除主观题答案信息
+    public void clearAnswer(UserAnswer userAnswer){
+        final String address = "http://47.102.199.28/flyapp/deleteAnswer";
+        final String json = JsonUtil.converJavaBeanToJson(userAnswer);
+        HttpUtil.sendQuestion(address, json, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Looper.prepare();
+                //Toast.makeText(getActivity(), "答案信息提交成功", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Looper.prepare();
+                Toast.makeText(getActivity(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                Looper.loop();
+            }
+        });
+    }
     // 获取题目的满分分数
     public void getScoreFromAnswer() {
         float score = 0; // 主观题分数

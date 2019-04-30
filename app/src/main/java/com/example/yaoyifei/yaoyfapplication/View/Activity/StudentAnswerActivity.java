@@ -190,7 +190,7 @@ public class StudentAnswerActivity extends Activity  {
     }
     //提交成绩信息
     public void commitGrade(UserGrade userGrade){
-        final String address = "http://47.102.199.28/flyapp/addUserGradeFromClient";
+        final String address = "http://47.102.199.28/flyapp/updatezgScore";
         final String json = JsonUtil.converJavaBeanToJson(userGrade);
         HttpUtil.sendQuestion(address, json, new HttpCallbackListener() {
             @Override

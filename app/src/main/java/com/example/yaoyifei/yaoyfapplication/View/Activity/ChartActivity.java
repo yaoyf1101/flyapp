@@ -45,7 +45,7 @@ public class ChartActivity extends Activity  {
         });
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerview.setAdapter(new AdapterYuntu(this,mUserAnswers));
-        LinearLayoutManager mLlm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true);
+        LinearLayoutManager mLlm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(mLlm);
     }
     //通过网络获取用户成绩信息

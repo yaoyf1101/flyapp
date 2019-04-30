@@ -174,7 +174,7 @@
                     android:id="@+id/score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="4"
                     android:inputType="number" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -185,7 +185,7 @@
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="4"
                     android:id="@+id/time"
                     android:inputType="number"/>
             </LinearLayout>

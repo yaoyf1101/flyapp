@@ -137,6 +137,7 @@ public class QuestionFragmentTeacher extends Fragment  {
         starttest = (Button) view.findViewById(R.id.btn_start_test);
         save = view.findViewById(R.id.save_answer);
         tips = view.findViewById(R.id.tips);
+        tips.setText("下拉预览题目");
         tips.setVisibility(View.VISIBLE);
         scrollView = view.findViewById(R.id.scrollView);//更新界面
         scrollView.setVisibility(View.INVISIBLE);
